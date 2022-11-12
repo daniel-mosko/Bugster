@@ -2,10 +2,7 @@ package sk.upjs.factory;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
-import sk.upjs.dao.BugDao;
-import sk.upjs.dao.MysqlBugDao;
-import sk.upjs.dao.MysqlUserDao;
-import sk.upjs.dao.UserDao;
+import sk.upjs.dao.*;
 
 public enum DaoFactory {
     INSTANCE;
@@ -13,6 +10,7 @@ public enum DaoFactory {
 
     private BugDao bugDao;
     private UserDao userDao;
+    private ProjectDao projectDao;
     private boolean testing = false;
 
 
@@ -49,5 +47,12 @@ public enum DaoFactory {
             jdbcTemplate = new JdbcTemplate(dataSource);
         }
         return jdbcTemplate;
+    }
+
+    public ProjectDao getProjectDao() {
+        if (projectDao == null) {
+            projectDao = new MysqlProjectDao(getJdbcTemplate());
+        }
+        return projectDao;
     }
 }
