@@ -22,7 +22,7 @@ public class MysqlProjectDao implements ProjectDao {
         return jdbcTemplate.queryForObject(sql, new ProjectRowMapper(), id);
     }
 
-    public List<Project> getByUser(long id) {
+    public List<Project> getByUserId(long id) {
         String sql = "select user_id,project_id from user_has_project where user_id=?";
         List<Long> projectsIds = jdbcTemplate.query(sql, new UserHasProjectRowMapper(), id);
         List<Project> projects = new ArrayList<>();
@@ -30,6 +30,25 @@ public class MysqlProjectDao implements ProjectDao {
             projects.add(getById(projectsId));
         }
         return projects;
+    }
+
+    public Project addUserToProject(long userId, long projectId) {
+        String sql = "insert into user_has_project values(?,?)";
+        SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
+        sjdbcInsert.withTableName("user_has_project");
+        sjdbcInsert.usingColumns("user_id", "project_id");
+
+        Map<String, Object> values = new HashMap<>();
+        values.put("user_id", userId);
+        values.put("project_id", projectId);
+        sjdbcInsert.execute(values);
+        return getById(projectId);
+    }
+
+    public boolean deleteUserFromProject(long userId, long projectId) {
+        String sql = "DELETE FROM user_has_project where user_id=? and project_id=?";
+        int changed = jdbcTemplate.update(sql, userId, projectId);
+        return changed == 1; // number of affected rows
     }
 
     public Project save(Project project) {

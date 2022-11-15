@@ -13,7 +13,7 @@ public interface UserDao {
 
     User save(User User) throws NullPointerException, NoSuchElementException;
 
-    List<User> getByProject(long id);
+    List<User> getByProjectId(long id) throws NoSuchElementException;
 
-    boolean delete(long id);
+    boolean delete(long id) throws NoSuchElementException;
 }

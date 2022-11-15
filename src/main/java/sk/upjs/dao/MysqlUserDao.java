@@ -22,7 +22,7 @@ public class MysqlUserDao implements UserDao {
         return jdbcTemplate.queryForObject(sql, new UserRowMapper());
     }
 
-    public List<User> getByProject(long id) {
+    public List<User> getByProjectId(long id) {
         String sql = "select user_id from user_has_project where project_id=?";
         List<Long> usersIds = jdbcTemplate.query(sql, new UserHasProjectRowMapper(), id);
         List<User> users = new ArrayList<>();
@@ -62,9 +62,11 @@ public class MysqlUserDao implements UserDao {
             long id = sjdbcInsert.executeAndReturnKey(values).longValue();
             return new User(id, user.getName(), user.getSurname(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.isActive());
         } else { // UPDATE
-            /*
-             * PORIESIT ESTE HESLO!
-             */
+            // If password was changed (check if current pass equals pass in database)
+            if (user.getPassword().equals(getById(user.getId()).getPassword())) {
+                String salt = BCrypt.gensalt();
+                user.setPassword(BCrypt.hashpw(user.getPassword(), salt));
+            }
             String sql = "UPDATE user SET name=?,surname=?,username=?,password=?,email=?,role_id=?,active=? WHERE id = " + user.getId();
             int changed = jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.isActive());
             if (changed == 1) return user;
@@ -73,7 +75,6 @@ public class MysqlUserDao implements UserDao {
     }
 
     /***
-     *
      * @param id - user id
      * @return if delete was successful
      */

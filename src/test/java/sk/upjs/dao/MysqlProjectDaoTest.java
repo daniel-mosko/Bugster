@@ -55,7 +55,7 @@ class MysqlProjectDaoTest {
 
     @Test
     void getByUser() {
-        List<Project> projects = projectDao.getByUser(1);
+        List<Project> projects = projectDao.getByUserId(1);
     }
 
     @Test

@@ -9,7 +9,11 @@ import java.util.NoSuchElementException;
 public interface ProjectDao {
     Project getById(long id) throws NoSuchElementException, EmptyResultDataAccessException;
 
-    List<Project> getByUser(long id);
+    List<Project> getByUserId(long id) throws NoSuchElementException;
+
+    Project addUserToProject(long userId, long projectId) throws NoSuchElementException;
+
+    boolean deleteUserFromProject(long userId, long projectId);
 
     Project save(Project project) throws NoSuchElementException, NullPointerException;
 

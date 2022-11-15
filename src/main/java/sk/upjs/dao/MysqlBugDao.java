@@ -10,7 +10,7 @@ import java.util.List;
 
 public class MysqlBugDao implements BugDao {
 
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     public MysqlBugDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
