@@ -1,7 +1,7 @@
 package sk.upjs.entity;
 
 public class Bug {
-    private long id;
+    private Long id;
     private String description;
     private String createdAt;
     private String updatedAt;
@@ -14,7 +14,7 @@ public class Bug {
     public Bug() {
     }
 
-    public Bug(long id, String description, String createdAt, String updatedAt, long projectId, long assignerId, long assigneeId, long statusId, long priorityId, long severityId) {
+    public Bug(Long id, String description, String createdAt, String updatedAt, long projectId, long assignerId, long assigneeId, long statusId, long severityId) {
         this.id = id;
         this.description = description;
         this.createdAt = createdAt;
@@ -26,7 +26,7 @@ public class Bug {
         this.severityId = severityId;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
