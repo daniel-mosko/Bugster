@@ -16,8 +16,8 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk.upjs.LoginController">
    <children>
       <Label layoutX="604.0" layoutY="265.0" text="Username" />
-      <PasswordField fx:id="PasswordTextField" layoutX="604.0" layoutY="351.0" prefHeight="25.0" prefWidth="286.0" />
-      <TextField fx:id="UsernameTextField" layoutX="604.0" layoutY="291.0" prefHeight="25.0" prefWidth="286.0" />
+      <PasswordField fx:id="passwordField" layoutX="604.0" layoutY="351.0" prefHeight="25.0" prefWidth="286.0" />
+      <TextField fx:id="usernameTextField" layoutX="604.0" layoutY="291.0" prefHeight="25.0" prefWidth="286.0" />
       <Label layoutX="604.0" layoutY="328.0" text="Password" />
       <Label fx:id="wrongCredentialsLabel" layoutX="604.0" layoutY="391.0" prefHeight="17.0" prefWidth="237.0" text="Wrong username or password" textFill="RED" />
       <Button fx:id="loginButton" layoutX="604.0" layoutY="424.0" mnemonicParsing="false" onAction="#loginUser" prefHeight="40.0" prefWidth="286.0" style="-fx-background-color: #0f2272;" text="Login" textFill="WHITE">

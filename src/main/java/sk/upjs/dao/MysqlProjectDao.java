@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import sk.upjs.entity.Project;
+import sk.upjs.factory.DaoFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,7 +34,10 @@ public class MysqlProjectDao implements ProjectDao {
     }
 
     public Project addUserToProject(long userId, long projectId) {
-        String sql = "insert into user_has_project values(?,?)";
+        UserDao userDao = DaoFactory.INSTANCE.getUserDao();
+        if (userDao.getById(userId) == null && getById(projectId) == null) {
+            throw new NoSuchElementException();
+        }
         SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         sjdbcInsert.withTableName("user_has_project");
         sjdbcInsert.usingColumns("user_id", "project_id");
@@ -56,7 +60,6 @@ public class MysqlProjectDao implements ProjectDao {
         if (project.getName() == null)
             throw new NullPointerException("Name of project is null");
         if (project.getId() == null) { // INSERT
-
             SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
             sjdbcInsert.withTableName("project");
             sjdbcInsert.usingGeneratedKeyColumns("id");
@@ -82,8 +85,9 @@ public class MysqlProjectDao implements ProjectDao {
     }
 
     public boolean delete(long id) {
-        int changed = jdbcTemplate.update("DELETE FROM project where id=" + id);
-        return changed == 1; // number of affected rows
+        int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE project_id=" + id);
+        int delete2 = jdbcTemplate.update("DELETE FROM project WHERE id=" + id);
+        return delete1 >= 1 && delete2 == 1; // number of affected rows
     }
 
     private static class UserHasProjectRowMapper implements RowMapper<Long> {

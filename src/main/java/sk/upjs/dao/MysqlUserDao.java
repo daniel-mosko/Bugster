@@ -23,8 +23,8 @@ public class MysqlUserDao implements UserDao {
     }
 
     public List<User> getByProjectId(long id) {
-        String sql = "select user_id from user_has_project where project_id=?";
-        List<Long> usersIds = jdbcTemplate.query(sql, new UserHasProjectRowMapper(), id);
+        String sql = "select user_id from user_has_project where project_id=" + id;
+        List<Long> usersIds = jdbcTemplate.query(sql, new UserHasProjectRowMapper());
         List<User> users = new ArrayList<>();
         for (Long userId : usersIds) {
             users.add(getById(userId));
@@ -37,9 +37,19 @@ public class MysqlUserDao implements UserDao {
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
+    public User getByUsername(String username) {
+        String sql = "select id,name,surname,username,password,email,role_id,active from user where username=?";
+        List<User> query = jdbcTemplate.query(sql, new UserRowMapper(), username);
+        System.out.println(query);
+        if (query.size() == 1)
+            return query.get(0);
+        return null;
+    }
+
     public User save(User user) {
         if (user == null) throw new NullPointerException("cannot save null");
-        if (user.getName() == null || user.getSurname() == null || user.getPassword() == null || user.getRole() == 0 || user.getUsername() == null || user.getEmail() == null)
+        if (user.getName() == null || user.getSurname() == null || user.getPassword() == null
+                || user.getRole() == 0 || user.getUsername() == null || user.getEmail() == null)
             throw new NullPointerException("Name, surname, username, password, role or email is null");
         if (user.getId() == null) { // INSERT
             String salt = BCrypt.gensalt();
@@ -79,8 +89,9 @@ public class MysqlUserDao implements UserDao {
      * @return if delete was successful
      */
     public boolean delete(long id) {
-        int changed = jdbcTemplate.update("DELETE FROM user where id=" + id);
-        return changed == 1; // number of affected rows
+        int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE user_id=" + id);
+        int delete2 = jdbcTemplate.update("DELETE FROM user WHERE id=" + id);
+        return delete1 >= 1 && delete2 == 1; // number of affected rows
     }
 
     private static class UserRowMapper implements RowMapper<User> {

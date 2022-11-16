@@ -9,7 +9,10 @@ import java.util.NoSuchElementException;
 public interface UserDao {
     User getById(long id) throws EmptyResultDataAccessException;
 
+    User getByUsername(String username);
+
     List<User> getAll();
+
 
     User save(User User) throws NullPointerException, NoSuchElementException;
 

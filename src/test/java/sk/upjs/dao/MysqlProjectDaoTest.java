@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
 import sk.upjs.entity.Project;
+import sk.upjs.entity.User;
 import sk.upjs.factory.DaoFactory;
 
 import java.util.List;
@@ -18,9 +19,11 @@ class MysqlProjectDaoTest {
 
     private final ProjectDao projectDao;
     private Project savedProject;
+    private UserDao userDao;
 
     public MysqlProjectDaoTest() {
         this.projectDao = DaoFactory.INSTANCE.getProjectDao();
+        this.userDao = DaoFactory.INSTANCE.getUserDao();
     }
 
     @BeforeEach
@@ -54,8 +57,21 @@ class MysqlProjectDaoTest {
     }
 
     @Test
-    void getByUser() {
-        List<Project> projects = projectDao.getByUserId(1);
+    void getByUserId() {
+        User user = new User();
+        user.setName("New Jakub");
+        user.setSurname("New Testovic");
+        user.setUsername("New jtest");
+        user.setPassword("pass123");
+        user.setEmail("new@test.com");
+        user.setRole(3);
+        user.setActive(true);
+        User savedUser = userDao.save(user);
+        projectDao.addUserToProject(savedUser.getId(), savedProject.getId());
+        List<Project> projects = projectDao.getByUserId(savedUser.getId());
+        assertEquals(1, projects.size());
+        assertNotNull(projectDao.getByUserId(savedUser.getId()));
+        userDao.delete(savedUser.getId());
     }
 
     @Test

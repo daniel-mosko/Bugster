@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
+import sk.upjs.entity.Project;
 import sk.upjs.entity.User;
 import sk.upjs.factory.DaoFactory;
 
@@ -15,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class MysqlUserDaoTest {
 
     private final UserDao userDao;
+    private final ProjectDao projectDao;
     private User savedUser;
 
     public MysqlUserDaoTest() {
         //DaoFactory.INSTANCE.setTesting();
         userDao = DaoFactory.INSTANCE.getUserDao();
+        projectDao = DaoFactory.INSTANCE.getProjectDao();
     }
 
     @BeforeEach
@@ -57,8 +60,22 @@ class MysqlUserDaoTest {
     }
 
     @Test
-    void getByProject(){
+    void getByProjectId() {
+        Project project = new Project();
+        project.setName("Test");
+        project.setDescription("Test");
+        Project savedProject = projectDao.save(project);
+        projectDao.addUserToProject(savedUser.getId(), savedProject.getId());
 
+        List<User> users = userDao.getByProjectId(savedProject.getId())
+                .stream()
+                .filter(u -> u.getId().equals(savedUser.getId()))
+                .toList();
+        // Only 1 with given ID can be assigned to project
+        assertEquals(1, users.size());
+        // Check if saved user is assigned to project
+        assertEquals(savedUser.getId(), users.get(0).getId());
+        projectDao.delete(savedProject.getId());
     }
 
     @Test
@@ -74,6 +91,7 @@ class MysqlUserDaoTest {
         user.setEmail("new@test.com");
         user.setRole(3);
         user.setActive(true);
+
         User saved = userDao.save(user);
         assertEquals(size + 1, userDao.getAll().size());
         assertNotNull(saved.getId());
