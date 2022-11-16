@@ -104,6 +104,7 @@ class MysqlBugDaoTest {
         assertEquals(size + 1, bugDao.getAll().size());
         assertNotNull(saved.getId());
         bugDao.delete(saved.getId());
+
         assertThrows(NullPointerException.class, () -> bugDao.save(new Bug(null, null, null,
                 null, 0, 0, 0, 0, 0)));
     }
