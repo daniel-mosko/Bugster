@@ -33,9 +33,7 @@ public class MysqlBugDao implements BugDao {
 
     public Bug save(Bug bug) {
         if (bug == null) throw new NullPointerException("cannot save null");
-
         if (bug.getId() == null) { // INSERT
-
             SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
             sjdbcInsert.withTableName("bug");
             sjdbcInsert.usingGeneratedKeyColumns("id");
