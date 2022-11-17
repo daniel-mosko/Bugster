@@ -3,6 +3,7 @@ package sk.upjs.dao;
 import sk.upjs.entity.Bug;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public interface BugDao {
     Bug getById(long id);
@@ -10,6 +11,8 @@ public interface BugDao {
     List<Bug> getAll();
 
     Bug save(Bug bug);
+
+    Bug changeStatus(Bug bug, long statusId) throws NoSuchElementException;
 
     boolean delete(long id);
 }

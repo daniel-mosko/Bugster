@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import sk.upjs.entity.Bug;
-import sk.upjs.entity.Project;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +36,7 @@ public class MysqlBugDao implements BugDao {
             SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
             sjdbcInsert.withTableName("bug");
             sjdbcInsert.usingGeneratedKeyColumns("id");
-            sjdbcInsert.usingColumns("description", "created_at", "updated_at", "project_id",
-                    "assignee_id", "assigner_id", "status_id", "severity_id");
+            sjdbcInsert.usingColumns("description", "created_at", "updated_at", "project_id", "assignee_id", "assigner_id", "status_id", "severity_id");
 
             Map<String, Object> values = new HashMap<>();
             values.put("description", bug.getDescription());
@@ -51,21 +49,27 @@ public class MysqlBugDao implements BugDao {
             values.put("severity_id", bug.getSeverityId());
 
             Long id = sjdbcInsert.executeAndReturnKey(values).longValue();
-            return new Bug(id, bug.getDescription(), bug.getCreatedAt(), bug.getUpdatedAt(), bug.getProjectId(),
-                    bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
+            return new Bug(id, bug.getDescription(), bug.getCreatedAt(), bug.getUpdatedAt(), bug.getProjectId(), bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
         } else { // UPDATE
-            String sql = "UPDATE bug SET name=?, description=? WHERE id = " + bug.getId();
-            int changed = jdbcTemplate.update(sql, bug.getDescription(), bug.getCreatedAt(), bug.getUpdatedAt(), bug.getProjectId(),
-                    bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
+            String sql = "UPDATE bug SET name=?, description=?,created_at=?,updated_at=?,project_id=?,assigner_id=?,asignee_id=?,status_id=?,severity_id=? WHERE id = " + bug.getId();
+            int changed = jdbcTemplate.update(sql, bug.getDescription(), bug.getCreatedAt(), bug.getUpdatedAt(), bug.getProjectId(), bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
             if (changed == 1) return bug;
             throw new NoSuchElementException("Bug with id " + bug.getId() + " not in DB");
         }
+    }
+
+    public Bug changeStatus(Bug bug, long statusId) throws NoSuchElementException {
+        String sql = "UPDATE bug SET status_id=? WHERE id = " + bug.getId();
+        int changed = jdbcTemplate.update(sql, bug.getStatusId());
+        if (changed == 1) return bug;
+        throw new NoSuchElementException("Bug with id " + bug.getId() + " not in DB");
     }
 
     public boolean delete(long id) {
         int changed = jdbcTemplate.update("DELETE FROM bug where id=" + id);
         return changed == 1; // number of affected rows
     }
+
 
     private static class BugRowMapper implements RowMapper<Bug> {
         public Bug mapRow(ResultSet rs, int rowNum) throws SQLException {
