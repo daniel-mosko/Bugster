@@ -45,6 +45,7 @@ public enum DaoFactory {
                 dataSource.setPassword("eE87#H06g");
             }
             jdbcTemplate = new JdbcTemplate(dataSource);
+
         }
         return jdbcTemplate;
     }

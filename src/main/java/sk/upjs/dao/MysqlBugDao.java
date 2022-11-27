@@ -20,7 +20,7 @@ public class MysqlBugDao implements BugDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Bug getById(long id) {
+    public Bug getById(long id) throws NoSuchElementException{
         String sql = "select id,description,created_at,updated_at,project_id,assignee_id,assigner_id,status_id,severity_id from bug where id=" + id;
         return jdbcTemplate.queryForObject(sql, new BugRowMapper());
     }
@@ -30,7 +30,7 @@ public class MysqlBugDao implements BugDao {
         return jdbcTemplate.query(sql, new BugRowMapper());
     }
 
-    public Bug save(Bug bug) {
+    public Bug save(Bug bug) throws NoSuchElementException,NullPointerException{
         if (bug == null) throw new NullPointerException("cannot save null");
         if (bug.getId() == null) { // INSERT
             SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);

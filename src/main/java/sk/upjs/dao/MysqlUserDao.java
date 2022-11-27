@@ -40,7 +40,6 @@ public class MysqlUserDao implements UserDao {
     public User getByUsername(String username) {
         String sql = "select id,name,surname,username,password,email,role_id,active from user where username=?";
         List<User> query = jdbcTemplate.query(sql, new UserRowMapper(), username);
-        System.out.println(query);
         if (query.size() == 1)
             return query.get(0);
         return null;
