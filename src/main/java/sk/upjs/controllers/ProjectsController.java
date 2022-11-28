@@ -36,7 +36,6 @@ public class ProjectsController {
 
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final ProjectDao projectDao = DaoFactory.INSTANCE.getProjectDao();
-    TableView.TableViewSelectionModel<Project> selectionModel;
     private ObservableList<Project> projectsModel;
     @FXML
     private MFXButton addProjectButton;
@@ -158,6 +157,7 @@ public class ProjectsController {
         projectsTable.getItems().setAll(projectsModel);
 
         // Selection model
+        TableView.TableViewSelectionModel<Project> selectionModel;
         selectionModel = projectsTable.getSelectionModel();
         selectionModel.setSelectionMode(
                 SelectionMode.SINGLE);

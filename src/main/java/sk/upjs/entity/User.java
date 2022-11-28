@@ -26,6 +26,17 @@ public class User {
         this.active = active;
     }
 
+    public User(User user) {
+        this.id = user.id;
+        this.name = user.name;
+        this.surname = user.surname;
+        this.username = user.username;
+        this.password = user.password;
+        this.email = user.email;
+        this.role = user.role;
+        this.active = user.active;
+    }
+
 
     public Long getId() {
         return id;
@@ -93,15 +104,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", role='" + role + '\'' +
-                ", active=" + active +
-                '}';
+        return name + " " + surname;
     }
 }
