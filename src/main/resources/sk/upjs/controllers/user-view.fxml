@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
+<?import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+
+<GridPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk.upjs.controllers.UsersController">
+      <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" minWidth="10.0" prefWidth="145.3333740234375" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0000076293945" minWidth="-Infinity" prefWidth="654.6666259765625" />
+      </columnConstraints>
+      <rowConstraints>
+          <RowConstraints />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      </rowConstraints>
+      <children>
+          <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+              <children>
+                  <Rectangle arcWidth="5.0" fill="#001f43" height="600.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="146.0" />
+                  <Label fx:id="loggedUserNameField" layoutX="37.0" layoutY="148.0" textFill="WHITE" />
+                  <ImageView fitHeight="92.0" fitWidth="73.0" layoutX="37.0" layoutY="30.0">
+                      <image>
+                          <Image url="@../logo.png" />
+                      </image>
+                  </ImageView>
+                  <Label layoutX="37.0" layoutY="201.0" prefHeight="17.0" prefWidth="73.0" text="Projects" textFill="WHITE">
+                      <font>
+                          <Font size="15.0" />
+                      </font>
+                  </Label>
+                  <MFXButton fx:id="logoutButton" layoutX="22.0" layoutY="531.0" onAction="#logoutButtonClick" prefHeight="38.0" prefWidth="102.0" text="Logout" />
+                  <MFXButton fx:id="projectsButtonMenu" layoutX="-10.0" layoutY="203.0" onAction="#onProjectsButtonMenuClick" prefHeight="38.0" prefWidth="146.0" style="-fx-background-color: #001f43;" text="Projects" textFill="WHITE" />
+            <MFXButton fx:id="usersButtonMenu" layoutX="-10.0" layoutY="262.0" onAction="#onUsersButtonMenuClick" prefHeight="38.0" prefWidth="146.0" style="-fx-background-color: #306DBA;" text="Users" textFill="WHITE" />
+              </children>
+          </Pane>
+          <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <children>
+            <Pane layoutX="18.0" layoutY="155.0" maxHeight="201.0" maxWidth="619.0" minHeight="0.0" prefHeight="79.0" prefWidth="619.0">
+               <children>
+                  <MFXTextField fx:id="filterIdField" floatMode="BORDER" floatingText="ID" layoutX="6.0" layoutY="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
+                  <MFXTextField fx:id="filterNameField" floatMode="BORDER" floatingText="Name" layoutX="6.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
+                  <MFXTextField fx:id="filterSurnameField" floatMode="BORDER" floatingText="Surname" layoutX="136.0" layoutY="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
+                  <MFXTextField fx:id="filterUsernameField" floatMode="BORDER" floatingText="Username" layoutX="136.0" layoutY="43.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
+                  <MFXTextField fx:id="filterEmailField" floatMode="BORDER" floatingText="Email" layoutX="269.0" layoutY="6.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
+                  <MFXComboBox fx:id="filterRoleComboBox" floatingText="Role" layoutX="399.0" layoutY="6.0" minHeight="0.0" prefHeight="30.0" prefWidth="122.0" />
+                  <MFXButton fx:id="addUserButton1" depthLevel="LEVEL4" layoutX="539.0" layoutY="6.0" onAction="#filterApplyButtonClick" prefHeight="68.0" prefWidth="73.0" style="-fx-background-color: #001F43;" text="OK" textFill="WHITE" />
+                  <MFXToggleButton fx:id="filterActiveButton" layoutX="282.0" layoutY="37.0" selected="true" text="Active" />
+               </children>
+            </Pane>
+                  <Label layoutX="19.0" layoutY="36.0" prefHeight="79.0" prefWidth="253.0" text="Users" textFill="#111251">
+                      <font>
+                          <Font name="System Bold" size="40.0" />
+                      </font>
+                  </Label>
+                  <MFXLegacyTableView fx:id="usersTable" layoutX="18.0" layoutY="257.0" prefHeight="310.0" prefWidth="619.0">
+                      <columns>
+                          <TableColumn fx:id="userIdCol" prefWidth="46.0" text="ID" />
+                          <TableColumn fx:id="userNameCol" prefWidth="125.33329772949219" text="Name" />
+                          <TableColumn fx:id="userSurnameCol" prefWidth="101.3333740234375" text="Surname" />
+                  <TableColumn fx:id="userUsernameCol" prefWidth="111.33334350585938" text="Username" />
+                  <TableColumn fx:id="userEmailCol" prefWidth="85.33331298828125" text="Email" />
+                  <TableColumn fx:id="userActiveCol" prefWidth="70.666748046875" text="Active" />
+                  <TableColumn fx:id="userRoleCol" prefWidth="80.0001220703125" text="Role" />
+                      </columns>
+                  </MFXLegacyTableView>
+            <Label layoutX="19.0" layoutY="102.0" prefHeight="79.0" prefWidth="59.0" text="Filter" textFill="#111251">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+                  <MFXButton fx:id="addUserButton" depthLevel="LEVEL4" layoutX="506.0" layoutY="55.0" onAction="#addUserButtonClick" prefHeight="41.0" prefWidth="122.0" style="-fx-background-color: #001F43;" text="Add new user" textFill="WHITE" />
+              </children>
+          </Pane>
+      </children>
+  </GridPane>

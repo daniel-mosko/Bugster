@@ -133,7 +133,20 @@ public class ProjectsController {
 
     @FXML
     void onUsersButtonMenuClick(ActionEvent event) {
-
+        try {
+            FXMLLoader fxmlLoader =
+                    new FXMLLoader(getClass().getResource("user-view.fxml"));
+            Parent parent = fxmlLoader.load();
+            Scene scene = new Scene(parent);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.getIcons().add(new Image("sk/upjs/logo.png"));
+            stage.setTitle("Edit project");
+            stage.show();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // filter on ENTER key
