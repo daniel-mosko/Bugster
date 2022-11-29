@@ -122,10 +122,6 @@ public class ProjectEditController {
                         break;
                     }
                 }
-                /* Re-render Table and ComboBox */
-                usersTable.setItems(assignedUsers);
-                /* Re-render ComboBox and clear selection */
-                userComboBox.setItems(userListModel);
                 userComboBox.clearSelection();
                 selectedComboBoxUser = null;
             }
@@ -141,6 +137,7 @@ public class ProjectEditController {
             /* Creating deep copy of selected User, because selected user can change between two for loops... */
             Long selectedUserId = new User(selectedUser).getId();
             deletedUsers.add(selectedUser);
+            userListModel.add(selectedUser);
             /* Remove user from assignedUsers */
             for (int i = 0; i < assignedUsers.size(); i++) {
                 if (assignedUsers.get(i).getId().equals(selectedUserId)) {
@@ -155,11 +152,6 @@ public class ProjectEditController {
                     break;
                 }
             }
-            /* Re-render usersTable */
-            usersTable.setItems(assignedUsers);
-            /* Add deleted users to ComboBox and re-render */
-            userListModel.addAll(deletedUsers);
-            userComboBox.setItems(userListModel);
             selectedUser = null;
         }
     }
@@ -217,7 +209,7 @@ public class ProjectEditController {
         userSurnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
 
         assignedUsers = FXCollections.observableArrayList(userDao.getByProjectId(projectModel.getId()));
-        usersTable.getItems().setAll(assignedUsers);
+        usersTable.setItems(assignedUsers);
 
         projectDescriptionTextArea.textProperty().bindBidirectional(projectModel.descriptionProperty());
         projectNameTextField.textProperty().bindBidirectional(projectModel.nameProperty());
@@ -253,6 +245,7 @@ public class ProjectEditController {
             public void onChanged(Change<? extends User> c) {
                 if (c.getList().size() > 0) {
                     selectedUser = c.getList().get(0);
+                    userDeleteButton.setDisable(loggedUser.getId().equals(selectedUser.getId()));
                     System.out.println(selectedUser);
                 }
             }
