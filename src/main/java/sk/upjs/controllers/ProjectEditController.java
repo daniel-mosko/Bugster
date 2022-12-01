@@ -13,7 +13,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import sk.upjs.LoggedUser;
 import sk.upjs.dao.ProjectDao;
 import sk.upjs.dao.UserDao;
@@ -82,7 +81,6 @@ public class ProjectEditController {
 
     @FXML
     void deleteProjectButtonClick(ActionEvent event) {
-        Stage stage = (Stage) projectNameTextField.getScene().getWindow();
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm delete");
         alert.setHeaderText("You are going to delete this project");

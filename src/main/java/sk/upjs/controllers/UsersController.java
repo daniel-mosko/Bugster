@@ -11,10 +11,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -104,9 +106,44 @@ public class UsersController {
     @FXML
     private MFXLegacyTableView<User> usersTable;
 
+    static void usersMenuClick(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader =
+                    new FXMLLoader(UsersController.class.getResource("user-view.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setScene(scene);
+            stage.getIcons().add(new Image("sk/upjs/logo.png"));
+            stage.setTitle("Users");
+            stage.show();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @FXML
     void onAddUserButtonClick(ActionEvent event) {
+        UserEditController controller = new UserEditController();
+        showUserEdit(controller, event);
+    }
 
+    void showUserEdit(UserEditController controller, Event event) {
+        try {
+            FXMLLoader fxmlLoader =
+                    new FXMLLoader(getClass().getResource("edit-user-view.fxml"));
+            fxmlLoader.setController(controller);
+            Parent parent = fxmlLoader.load();
+            Scene scene = new Scene(parent);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Edit user");
+            stage.show();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -189,28 +226,12 @@ public class UsersController {
                     public void handle(MouseEvent event) {
                         if (event.getClickCount() == 2) {
                             User selectedUser = c.getList().get(0);
-                            //showUserEdit(new UserEditController(selectedUser), event);
+                            showUserEdit(new UserEditController(selectedUser), event);
                         }
                     }
                 });
             }
         });
-    }
-
-    static void usersMenuClick(ActionEvent event){
-        try {
-            FXMLLoader fxmlLoader =
-                    new FXMLLoader(UsersController.class.getResource("user-view.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setScene(scene);
-            stage.getIcons().add(new Image("sk/upjs/logo.png"));
-            stage.setTitle("Users");
-            stage.show();
-            ((Node) (event.getSource())).getScene().getWindow().hide();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
 }

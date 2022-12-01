@@ -1,5 +1,7 @@
 package sk.upjs.models;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import sk.upjs.entity.User;
@@ -13,7 +15,7 @@ public class UserFxModel {
     private StringProperty password = new SimpleStringProperty();
     private StringProperty email = new SimpleStringProperty();
     private int role_id;
-    private boolean active;
+    private BooleanProperty active = new SimpleBooleanProperty();
 
     public UserFxModel(User user) {
         this.id = user.getId();
@@ -22,8 +24,8 @@ public class UserFxModel {
         username.set(user.getUsername());
         password.set(user.getPassword()); // zvazit
         email.set(user.getEmail());
+        active.set(user.isActive());
         this.role_id = user.getRole();
-        this.active = user.isActive();
     }
 
     public UserFxModel() {
@@ -102,11 +104,15 @@ public class UserFxModel {
     }
 
     public boolean isActive() {
+        return active.get();
+    }
+
+    public BooleanProperty activeProperty() {
         return active;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.active.set(active);
     }
 
     public User getUser() {
