@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import sk.upjs.entity.Role;
 import sk.upjs.entity.User;
 
 import java.sql.ResultSet;
@@ -30,6 +31,12 @@ public class MysqlUserDao implements UserDao {
             users.add(getById(userId));
         }
         return users;
+    }
+
+    @Override
+    public List<Role> getAllRoles() {
+        String sql = "select id,name from role";
+        return jdbcTemplate.query(sql, new RoleRowMapper());
     }
 
     public List<User> getAll() {
@@ -111,6 +118,15 @@ public class MysqlUserDao implements UserDao {
     private static class UserHasProjectRowMapper implements RowMapper<Long> {
         public Long mapRow(ResultSet rs, int rowNum) throws SQLException {
             return rs.getLong("user_id");
+        }
+    }
+
+    private static class RoleRowMapper implements RowMapper<Role> {
+        public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Role role = new Role();
+            role.setId(rs.getLong("id"));
+            role.setName(rs.getString("name"));
+            return role;
         }
     }
 }

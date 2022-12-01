@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static sk.upjs.controllers.ProjectsController.projectsMenuClick;
+import static sk.upjs.controllers.UsersController.usersMenuClick;
 
 public class ProjectEditController {
 
@@ -168,7 +169,7 @@ public class ProjectEditController {
 
     @FXML
     void onUsersButtonMenuClick(ActionEvent event) {
-
+        usersMenuClick(event);
     }
 
     @FXML

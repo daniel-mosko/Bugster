@@ -3,6 +3,7 @@ package sk.upjs.controllers;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -31,6 +32,8 @@ import sk.upjs.factory.DaoFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static sk.upjs.controllers.UsersController.usersMenuClick;
 
 public class ProjectsController {
 
@@ -96,6 +99,7 @@ public class ProjectsController {
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Projects");
             stage.setScene(scene);
+            stage.getIcons().add(new Image("sk/upjs/logo.png"));
             stage.show();
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IOException e) {
@@ -133,29 +137,9 @@ public class ProjectsController {
 
     @FXML
     void onUsersButtonMenuClick(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader =
-                    new FXMLLoader(getClass().getResource("user-view.fxml"));
-            Parent parent = fxmlLoader.load();
-            Scene scene = new Scene(parent);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.getIcons().add(new Image("sk/upjs/logo.png"));
-            stage.setTitle("Edit project");
-            stage.show();
-            ((Node) (event.getSource())).getScene().getWindow().hide();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        usersMenuClick(event);
     }
 
-    // filter on ENTER key
-    @FXML
-    void searchBoxChange(ActionEvent event) {
-        projectsTable.getItems().setAll(projectsModel.stream()
-                .filter(project -> (project.getName() + project.getDescription() + project.getId())
-                        .contains(searchBox.getText())).collect(Collectors.toList()));
-    }
 
     @FXML
     void initialize() {
@@ -168,6 +152,13 @@ public class ProjectsController {
 
         System.out.println(projects);
         projectsTable.getItems().setAll(projectsModel);
+
+        searchBox.textProperty().addListener((ChangeListener<String>)
+                (observable, oldValue, newValue) -> projectsTable.setItems(
+                        FXCollections.observableArrayList(projectsModel.stream()
+                                .filter(project -> (project.getName() + project.getDescription() + project.getId())
+                                        .contains(newValue)).collect(Collectors.toList())))
+        );
 
         // Selection model
         TableView.TableViewSelectionModel<Project> selectionModel;

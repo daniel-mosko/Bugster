@@ -49,7 +49,7 @@
                           <Font name="System Bold" size="40.0" />
                       </font>
                   </Label>
-                  <MFXTextField fx:id="searchBox" borderGap="0.0" floatingText="Search" layoutX="18.0" layoutY="132.0" onAction="#searchBoxChange" prefHeight="48.0" prefWidth="173.0" />
+                  <MFXTextField fx:id="searchBox" borderGap="0.0" floatingText="Search" layoutX="18.0" layoutY="132.0" prefHeight="48.0" prefWidth="173.0" />
                   <MFXButton fx:id="addProjectButton" depthLevel="LEVEL4" layoutX="205.0" layoutY="132.0" onAction="#addProjectButtonClick" prefHeight="48.0" prefWidth="135.0" style="-fx-background-color: #001F43;" text="Add new project" textFill="WHITE" />
                   <MFXLegacyTableView fx:id="projectsTable" layoutX="18.0" layoutY="201.0" prefHeight="366.0" prefWidth="619.0">
                       <columns>
