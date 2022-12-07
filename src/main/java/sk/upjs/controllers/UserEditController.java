@@ -1,8 +1,8 @@
 package sk.upjs.controllers;
 
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 import io.github.palexdev.materialfx.controls.*;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import sk.upjs.EmailValidator;
 import sk.upjs.LoggedUser;
 import sk.upjs.dao.UserDao;
 import sk.upjs.entity.Role;
@@ -25,50 +26,35 @@ import static sk.upjs.controllers.UsersController.usersMenuClick;
 
 public class UserEditController {
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
-    private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-    private ObservableList<Role> roles;
+    private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
+    private final UserFxModel userModel;
     private Role selectedRole;
-
     @FXML
     private MFXButton deleteUserButton;
-
     @FXML
     private MFXToggleButton isActiveButton;
-
     @FXML
     private Label loggedUserNameField;
-
     @FXML
     private MFXButton logoutButton;
-
     @FXML
     private MFXButton projectsButtonMenu;
-
     @FXML
     private MFXButton saveUserButton;
-
     @FXML
     private MFXTextField userEmailField;
-
     @FXML
     private MFXTextField userNameField;
-
     @FXML
     private MFXPasswordField userPasswordField;
-
     @FXML
     private MFXComboBox<Role> userRoleComboBox;
-
     @FXML
     private MFXTextField userSurnameField;
-
     @FXML
     private MFXTextField userUsernameField;
-
     @FXML
     private MFXButton usersMenuButtonClick;
-
-    private UserFxModel userModel;
 
     public UserEditController(User user) {
         this.userModel = new UserFxModel(user);
@@ -105,6 +91,8 @@ public class UserEditController {
     @FXML
     void onSaveUserButtonClick(ActionEvent event) {
         User user = userModel.getUser();
+        boolean userHasPassword = user.getId() != null && !userDao.getById(user.getId()).getPassword().isBlank();
+        user.setRole_id(selectedRole.getId());
         if (user.getName() == null || user.getName().isBlank()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setContentText("Enter user name");
@@ -117,24 +105,41 @@ public class UserEditController {
             alert.show();
             return;
         }
-        if (user.getUsername() == null || user.getUsername().isBlank()) {
+        if (user.getUsername() == null || user.getUsername().isBlank() || user.getUsername().length() <= 3) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Enter username");
+            alert.setContentText("Enter valid username (4+ characters)");
             alert.show();
             return;
         }
-        if (user.getId() == null && user.getPassword() == null || user.getPassword().isBlank()) {
+        System.out.println(userHasPassword);
+        System.out.println(user.getPassword());
+        if (!userHasPassword) {
+            if (userPasswordField.getText().isBlank()) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setContentText("Enter password");
+                alert.show();
+                return;
+            }
+
+            // Check strength of a password
+            Zxcvbn zxcvbn = new Zxcvbn();
+            Strength strength = zxcvbn.measure(userPasswordField.getText());
+            // 2 Good （guesses < 10^8 + 5）
+            if (strength.getScore() <= 2) {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setContentText("Weak password");
+                alert.show();
+                return;
+            }
+            user.setPassword(userPasswordField.getText());
+        }
+        if (user.getEmail() == null || user.getEmail().isBlank() || !EmailValidator.validate(user.getEmail())) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Enter password");
+            alert.setContentText("Invalid email");
             alert.show();
             return;
         }
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Enter email");
-            alert.show();
-            return;
-        }
+        System.out.println(user);
         userDao.save(user);
         usersMenuClick(event);
     }
@@ -153,9 +158,10 @@ public class UserEditController {
         userSurnameField.textProperty().bindBidirectional(userModel.surnameProperty());
         userUsernameField.textProperty().bindBidirectional(userModel.usernameProperty());
         userEmailField.textProperty().bindBidirectional(userModel.emailProperty());
+        // userRoleComboBox.getSelectionModel().bindItemBidirectional(userModel.role_idProperty());
         isActiveButton.selectedProperty().bindBidirectional(userModel.activeProperty());
 
-        roles = FXCollections.observableArrayList(userDao.getAllRoles());
+        ObservableList<Role> roles = FXCollections.observableArrayList(userDao.getAllRoles());
         userRoleComboBox.setItems(roles);
         if (userModel.getId() != null) {
             for (Role role : roles) {
@@ -169,12 +175,9 @@ public class UserEditController {
             userRoleComboBox.selectFirst();
             selectedRole = userRoleComboBox.getSelectedItem();
         }
-        userRoleComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Role>() {
-            @Override
-            public void changed(ObservableValue<? extends Role> observable, Role oldValue, Role newValue) {
-                if (newValue != null) {
-                    selectedRole = newValue;
-                }
+        userRoleComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedRole = newValue;
             }
         });
     }

@@ -47,7 +47,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>5.3.23</version>
+            <version>6.0.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
@@ -59,8 +59,16 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.5</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.nulab-inc/zxcvbn -->
+        <dependency>
+            <groupId>com.nulab-inc</groupId>
+            <artifactId>zxcvbn</artifactId>
+            <version>1.7.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>io.github.palexdev</groupId>

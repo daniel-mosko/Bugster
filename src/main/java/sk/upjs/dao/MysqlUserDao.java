@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.util.StringUtils;
 import sk.upjs.LoggedUser;
 import sk.upjs.entity.Role;
 import sk.upjs.entity.User;
@@ -56,12 +57,15 @@ public class MysqlUserDao implements UserDao {
     }
 
     public User save(User user) throws NullPointerException, UnauthorizedAccessException {
-        if (loggedUser.getRole() != 1)
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can save or update user");
         if (user == null) throw new NullPointerException("cannot save null");
         if (user.getName() == null || user.getSurname() == null || user.getPassword() == null
-                || user.getRole() == 0 || user.getUsername() == null || user.getEmail() == null)
+                || user.getRole_id() == 0 || user.getUsername() == null || user.getEmail() == null)
             throw new NullPointerException("Name, surname, username, password, role or email is null");
+        // Normalization
+        user.setName(StringUtils.capitalize(user.getName()));
+        user.setSurname(StringUtils.capitalize(user.getSurname()));
         if (user.getId() == null) { // INSERT
             String salt = BCrypt.gensalt();
             user.setPassword(BCrypt.hashpw(user.getPassword(), salt));
@@ -77,19 +81,19 @@ public class MysqlUserDao implements UserDao {
             values.put("username", user.getUsername());
             values.put("password", user.getPassword());
             values.put("email", user.getEmail());
-            values.put("role_id", user.getRole());
+            values.put("role_id", user.getRole_id());
             values.put("active", user.isActive());
 
             long id = sjdbcInsert.executeAndReturnKey(values).longValue();
-            return new User(id, user.getName(), user.getSurname(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.isActive());
+            return new User(id, user.getName(), user.getSurname(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole_id(), user.isActive());
         } else { // UPDATE
-            // If password was changed (check if current pass equals pass in database)
-            if (user.getPassword().equals(getById(user.getId()).getPassword())) {
+            // If password has changed (check if current pass equals pass in database)
+            if (!user.getPassword().equals(getById(user.getId()).getPassword())) {
                 String salt = BCrypt.gensalt();
                 user.setPassword(BCrypt.hashpw(user.getPassword(), salt));
             }
             String sql = "UPDATE user SET name=?,surname=?,username=?,password=?,email=?,role_id=?,active=? WHERE id = " + user.getId();
-            int changed = jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole(), user.isActive());
+            int changed = jdbcTemplate.update(sql, user.getName(), user.getSurname(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRole_id(), user.isActive());
             if (changed == 1) return user;
             throw new NoSuchElementException("User with id " + user.getId() + " not in DB");
         }
@@ -100,7 +104,7 @@ public class MysqlUserDao implements UserDao {
      * @return if delete was successful
      */
     public boolean delete(long id) throws UnauthorizedAccessException {
-        if (loggedUser.getRole() != 1)
+        if (loggedUser.getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can delete user");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE user_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM user WHERE id=" + id);
@@ -116,7 +120,7 @@ public class MysqlUserDao implements UserDao {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
-            user.setRole(rs.getInt("role_id"));
+            user.setRole_id(rs.getInt("role_id"));
             user.setActive(rs.getBoolean("active"));
             return user;
         }
@@ -131,7 +135,7 @@ public class MysqlUserDao implements UserDao {
     private static class RoleRowMapper implements RowMapper<Role> {
         public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
             Role role = new Role();
-            role.setId(rs.getLong("id"));
+            role.setId(rs.getInt("id"));
             role.setName(rs.getString("name"));
             return role;
         }

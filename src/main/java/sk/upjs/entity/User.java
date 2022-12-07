@@ -8,21 +8,30 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private int role;
+    private int role_id;
     private boolean active;
+
+    /**
+     * Role id
+     * 1 -> Admin
+     * 2 -> Project Manager
+     * 3 -> Developer
+     * Active id
+     * 1 -> Active
+     * 2 -> Inactive
+     */
 
     public User() {
     }
 
-
-    public User(Long id, String name, String surname, String username, String password, String email, int role, boolean active) {
+    public User(Long id, String name, String surname, String username, String password, String email, int role_id, boolean active) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.role = role;
+        this.role_id = role_id;
         this.active = active;
     }
 
@@ -33,7 +42,7 @@ public class User {
         this.username = user.username;
         this.password = user.password;
         this.email = user.email;
-        this.role = user.role;
+        this.role_id = user.role_id;
         this.active = user.active;
     }
 
@@ -86,12 +95,12 @@ public class User {
         this.email = email;
     }
 
-    public int getRole() {
-        return role;
+    public int getRole_id() {
+        return role_id;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setRole_id(int role_id) {
+        this.role_id = role_id;
     }
 
     public boolean isActive() {
@@ -104,6 +113,23 @@ public class User {
 
     @Override
     public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", surname='" + surname + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role_id +
+                ", active=" + active +
+                '}';
+    }
+
+    /*
+    @Override
+    public String toString() {
         return name + " " + surname;
     }
+
+ */
 }

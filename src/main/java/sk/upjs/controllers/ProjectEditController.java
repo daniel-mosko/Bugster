@@ -36,7 +36,7 @@ public class ProjectEditController {
     private final List<User> deletedUsers = new ArrayList<>();
     private final ProjectFxModel projectModel;
     private final List<User> usersToAdd = new ArrayList<>();
-    private ObservableList<User> assignedUsers = FXCollections.observableArrayList(new ArrayList<User>());
+    private final ObservableList<User> assignedUsers = FXCollections.observableArrayList(new ArrayList<>());
     private User selectedUser;
     private ObservableList<User> userListModel;
     private User selectedComboBoxUser;
@@ -227,12 +227,9 @@ public class ProjectEditController {
         }
         userComboBox.setItems(userListModel);
 
-        userComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<User>() {
-            @Override
-            public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
-                if (newValue != null) {
-                    selectedComboBoxUser = newValue;
-                }
+        userComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                selectedComboBoxUser = newValue;
             }
         });
 
@@ -241,14 +238,11 @@ public class ProjectEditController {
         TableView.TableViewSelectionModel<User> selectionModel = usersTable.getSelectionModel();
         selectionModel.setSelectionMode(SelectionMode.SINGLE);
         ObservableList<User> selectedItems = selectionModel.getSelectedItems();
-        selectedItems.addListener(new ListChangeListener<User>() {
-            @Override
-            public void onChanged(Change<? extends User> c) {
-                if (c.getList().size() > 0) {
-                    selectedUser = c.getList().get(0);
-                    userDeleteButton.setDisable(loggedUser.getId().equals(selectedUser.getId()));
-                    System.out.println(selectedUser);
-                }
+        selectedItems.addListener((ListChangeListener<User>) c -> {
+            if (c.getList().size() > 0) {
+                selectedUser = c.getList().get(0);
+                userDeleteButton.setDisable(loggedUser.getId().equals(selectedUser.getId()));
+                System.out.println(selectedUser);
             }
         });
     }

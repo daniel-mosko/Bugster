@@ -64,7 +64,7 @@ class MysqlProjectDaoTest {
         user.setUsername("New jtest");
         user.setPassword("pass123");
         user.setEmail("new@test.com");
-        user.setRole(3);
+        user.setRole_id(3);
         user.setActive(true);
         User savedUser = userDao.save(user);
         projectDao.addUserToProject(savedUser.getId(), savedProject.getId());

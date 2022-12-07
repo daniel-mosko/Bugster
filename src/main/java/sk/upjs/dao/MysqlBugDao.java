@@ -3,7 +3,9 @@ package sk.upjs.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import sk.upjs.LoggedUser;
 import sk.upjs.entity.Bug;
+import sk.upjs.entity.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,12 +17,13 @@ import java.util.NoSuchElementException;
 public class MysqlBugDao implements BugDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
 
     public MysqlBugDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Bug getById(long id) throws NoSuchElementException{
+    public Bug getById(long id) {
         String sql = "select id,description,created_at,updated_at,project_id,assignee_id,assigner_id,status_id,severity_id from bug where id=" + id;
         return jdbcTemplate.queryForObject(sql, new BugRowMapper());
     }
@@ -30,7 +33,9 @@ public class MysqlBugDao implements BugDao {
         return jdbcTemplate.query(sql, new BugRowMapper());
     }
 
-    public Bug save(Bug bug) throws NoSuchElementException,NullPointerException{
+    public Bug save(Bug bug) throws NoSuchElementException, NullPointerException {
+        if (loggedUser.getRole_id() != 1 && loggedUser.getRole_id() != 2)
+            throw new UnauthorizedAccessException("Unauthorized - only admin and project manager can save bug");
         if (bug == null) throw new NullPointerException("cannot save null");
         if (bug.getId() == null) { // INSERT
             SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -58,7 +63,7 @@ public class MysqlBugDao implements BugDao {
         }
     }
 
-    public Bug changeStatus(Bug bug, long statusId) throws NoSuchElementException {
+    public Bug changeStatus(Bug bug, long statusId) {
         String sql = "UPDATE bug SET status_id=? WHERE id = " + bug.getId();
         int changed = jdbcTemplate.update(sql, bug.getStatusId());
         if (changed == 1) return bug;
@@ -66,6 +71,8 @@ public class MysqlBugDao implements BugDao {
     }
 
     public boolean delete(long id) {
+        if (loggedUser.getRole_id() != 1 && loggedUser.getRole_id() != 2)
+            throw new UnauthorizedAccessException("Unauthorized - only admin and project manager can delete bug");
         int changed = jdbcTemplate.update("DELETE FROM bug where id=" + id);
         return changed == 1; // number of affected rows
     }

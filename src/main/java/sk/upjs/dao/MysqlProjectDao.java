@@ -36,8 +36,8 @@ public class MysqlProjectDao implements ProjectDao {
         return projects;
     }
 
-    public Project addUserToProject(long userId, long projectId) {
-        if (loggedUser.getRole() != 1 && loggedUser.getRole() != 2)
+    public Project addUserToProject(long userId, long projectId) throws NoSuchElementException, UnauthorizedAccessException {
+        if (loggedUser.getRole_id() != 1 && loggedUser.getRole_id() != 2)
             throw new UnauthorizedAccessException("Only admin and project manager can add user to project");
         UserDao userDao = DaoFactory.INSTANCE.getUserDao();
         if (userDao.getById(userId) == null && getById(projectId) == null) {
@@ -55,17 +55,16 @@ public class MysqlProjectDao implements ProjectDao {
     }
 
     public boolean deleteUserFromProject(long userId, long projectId) throws UnauthorizedAccessException {
-        if (loggedUser.getRole() != 1 && loggedUser.getRole() != 2)
+        if (loggedUser.getRole_id() != 1 && loggedUser.getRole_id() != 2)
             throw new UnauthorizedAccessException("Unauthorized - only admin and project manager can delete user from project");
         String sql = "DELETE FROM user_has_project where user_id=? and project_id=?";
         int changed = jdbcTemplate.update(sql, userId, projectId);
         return changed == 1; // number of affected rows
     }
 
-    public Project save(Project project) {
-        if (loggedUser.getRole() != 1)
+    public Project save(Project project) throws NoSuchElementException, NullPointerException, UnauthorizedAccessException {
+        if (loggedUser.getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can save or update project");
-
         if (project == null) throw new NullPointerException("cannot save null");
         if (project.getName() == null)
             throw new NullPointerException("Name of project is null");
@@ -95,7 +94,7 @@ public class MysqlProjectDao implements ProjectDao {
     }
 
     public boolean delete(long id) {
-        if (loggedUser.getRole() != 1)
+        if (loggedUser.getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can delete project");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE project_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM project WHERE id=" + id);

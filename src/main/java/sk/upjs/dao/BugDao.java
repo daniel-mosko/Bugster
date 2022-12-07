@@ -10,9 +10,9 @@ public interface BugDao {
 
     List<Bug> getAll();
 
-    Bug save(Bug bug) throws NoSuchElementException, NullPointerException;
+    Bug save(Bug bug) throws NoSuchElementException, NullPointerException, UnauthorizedAccessException;
 
     Bug changeStatus(Bug bug, long statusId) throws NoSuchElementException;
 
-    boolean delete(long id);
+    boolean delete(long id) throws UnauthorizedAccessException;
 }

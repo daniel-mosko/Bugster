@@ -3,13 +3,11 @@ package sk.upjs.controllers;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -21,7 +19,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import sk.upjs.LoggedUser;
 import sk.upjs.dao.ProjectDao;
@@ -112,14 +109,25 @@ public class ProjectsController {
         }
     }
 
+    private static void bugsMenuClick(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(BugsController.class.getResource("bug-view-borderPane.fxml"));
+            Stage stage = new Stage();
+            Scene scene = new Scene(fxmlLoader.load());
+            stage.setTitle("Bugs");
+            stage.setScene(scene);
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
+            stage.show();
+            ((Node) (event.getSource())).getScene().getWindow().hide();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     void addProjectButtonClick(ActionEvent event) {
         ProjectEditController controller = new ProjectEditController();
         showProjectEdit(controller, event);
-    }
-
-    @FXML
-    void onBugsButtonMenuClick(ActionEvent event) {
     }
 
     void showProjectEdit(ProjectEditController controller, Event event) {
@@ -150,6 +158,10 @@ public class ProjectsController {
         usersMenuClick(event);
     }
 
+    @FXML
+    void onBugsButtonMenuClick(ActionEvent event) {
+        bugsMenuClick(event);
+    }
 
     @FXML
     void initialize() {
@@ -164,11 +176,10 @@ public class ProjectsController {
         System.out.println(projects);
         projectsTable.getItems().setAll(projectsModel);
 
-        searchBox.textProperty().addListener((ChangeListener<String>)
-                (observable, oldValue, newValue) -> projectsTable.setItems(
-                        FXCollections.observableArrayList(projectsModel.stream()
-                                .filter(project -> (project.getName() + project.getDescription() + project.getId())
-                                        .contains(newValue)).collect(Collectors.toList())))
+        searchBox.textProperty().addListener((observable, oldValue, newValue) -> projectsTable.setItems(
+                FXCollections.observableArrayList(projectsModel.stream()
+                        .filter(project -> (project.getName() + project.getDescription() + project.getId())
+                                .contains(newValue)).collect(Collectors.toList())))
         );
 
         // Selection model
@@ -177,25 +188,16 @@ public class ProjectsController {
         selectionModel.setSelectionMode(
                 SelectionMode.SINGLE);
         ObservableList<Project> selectedItems = selectionModel.getSelectedItems();
-        selectedItems.addListener(new ListChangeListener<Project>() {
-            @Override
-            public void onChanged(Change<? extends Project> c) {
-                projectsTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        if (event.getClickCount() == 2) {
-                            Project selectedProject = c.getList().get(0);
-                            showProjectEdit(new ProjectEditController(selectedProject), event);
-                        }
-                    }
-                });
+        selectedItems.addListener((ListChangeListener<Project>) c -> projectsTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                Project selectedProject = c.getList().get(0);
+                showProjectEdit(new ProjectEditController(selectedProject), event);
             }
-        });
+        }));
     }
 
     @FXML
     void logoutButtonClick(ActionEvent event) {
         logout(event);
     }
-
 }

@@ -5,14 +5,11 @@ import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,7 +19,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import sk.upjs.LoggedUser;
 import sk.upjs.dao.UserDao;
@@ -37,11 +33,10 @@ import static sk.upjs.controllers.ProjectsController.projectsMenuClick;
 
 public class UsersController {
 
-    private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-    private User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
+    private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
+    private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private ObservableList<User> usersList;
     private ObservableList<User> usersFilteredList;
-    private ObservableList<Role> roles;
     private Role filterSelectedRole;
 
     @FXML
@@ -156,7 +151,7 @@ public class UsersController {
                                 && user.getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase())
                                 && user.getEmail().toLowerCase().contains(filterEmailField.getText().toLowerCase())
                                 && user.isActive() == filterActiveButton.isSelected()
-                                && (filterSelectedRole.getName().equals("Any") || user.getRole() == filterSelectedRole.getId()))
+                                && (filterSelectedRole.getName().equals("Any") || user.getRole_id() == filterSelectedRole.getId()))
                 .toList());
         System.out.println(usersFilteredList);
         usersTable.setItems(usersFilteredList);
@@ -200,39 +195,28 @@ public class UsersController {
         userSurnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
         userUsernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
         userEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
-        userRoleCol.setCellValueFactory(new PropertyValueFactory<>("role"));
+        userRoleCol.setCellValueFactory(new PropertyValueFactory<>("role_id"));
         userActiveCol.setCellValueFactory(new PropertyValueFactory<>("active"));
 
         usersList = FXCollections.observableArrayList(userDao.getAll());
         usersTable.setItems(usersList);
 
-        roles = FXCollections.observableArrayList(userDao.getAllRoles());
-        roles.add(new Role(null, "Any"));
+        ObservableList<Role> roles = FXCollections.observableArrayList(userDao.getAllRoles());
+        roles.add(new Role(0, "Any"));
         filterRoleComboBox.setItems(roles);
         filterRoleComboBox.selectLast();
         filterSelectedRole = filterRoleComboBox.getSelectedItem();
-        filterRoleComboBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Role>() {
-            @Override
-            public void changed(ObservableValue<? extends Role> observable, Role oldValue, Role newValue) {
-                if (newValue != null) {
-                    filterSelectedRole = newValue;
-                }
+        filterRoleComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                filterSelectedRole = newValue;
             }
         });
-        usersTable.getSelectionModel().getSelectedItems().addListener(new ListChangeListener<User>() {
-            @Override
-            public void onChanged(Change<? extends User> c) {
-                usersTable.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        if (event.getClickCount() == 2) {
-                            User selectedUser = c.getList().get(0);
-                            showUserEdit(new UserEditController(selectedUser), event);
-                        }
-                    }
-                });
+        usersTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<User>) c -> usersTable.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                User selectedUser = c.getList().get(0);
+                showUserEdit(new UserEditController(selectedUser), event);
             }
-        });
+        }));
     }
 
 }

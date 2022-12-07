@@ -15,11 +15,11 @@ public interface UserDao {
     List<User> getAll();
 
 
-    User save(User User) throws NullPointerException, NoSuchElementException;
+    User save(User User) throws NullPointerException, NoSuchElementException, UnauthorizedAccessException;
 
     List<User> getByProjectId(long id) throws NoSuchElementException;
 
     List<Role> getAllRoles();
 
-    boolean delete(long id) throws NoSuchElementException;
+    boolean delete(long id) throws NoSuchElementException, UnauthorizedAccessException;
 }

@@ -11,11 +11,11 @@ public interface ProjectDao {
 
     List<Project> getByUserId(long id) throws NoSuchElementException;
 
-    Project addUserToProject(long userId, long projectId) throws NoSuchElementException;
+    Project addUserToProject(long userId, long projectId) throws NoSuchElementException, UnauthorizedAccessException;
 
-    boolean deleteUserFromProject(long userId, long projectId);
+    boolean deleteUserFromProject(long userId, long projectId) throws UnauthorizedAccessException;
 
-    Project save(Project project) throws NoSuchElementException, NullPointerException;
+    Project save(Project project) throws NoSuchElementException, NullPointerException,UnauthorizedAccessException;
 
     List<Project> getAll();
 

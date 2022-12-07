@@ -1,10 +1,10 @@
 package sk.upjs.entity;
 
 public class Role {
-    private Long id;
+    private int id;
     private String name;
 
-    public Role(Long id, String name) {
+    public Role(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -12,11 +12,11 @@ public class Role {
     public Role() {
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -33,7 +33,7 @@ class MysqlUserDaoTest {
         user.setUsername("jtest");
         user.setPassword("pass123");
         user.setEmail("test@test.com");
-        user.setRole(3);
+        user.setRole_id(3);
         user.setActive(true);
         savedUser = userDao.save(user);
     }
@@ -89,7 +89,7 @@ class MysqlUserDaoTest {
         user.setUsername("New jtest");
         user.setPassword("pass123");
         user.setEmail("new@test.com");
-        user.setRole(3);
+        user.setRole_id(3);
         user.setActive(true);
 
         User saved = userDao.save(user);
@@ -115,7 +115,7 @@ class MysqlUserDaoTest {
         assertEquals(updated.getSurname(), fromDb.getSurname());
         assertEquals(updated.getUsername(), fromDb.getUsername());
         assertEquals(updated.getEmail(), fromDb.getEmail());
-        assertEquals(updated.getRole(), fromDb.getRole());
+        assertEquals(updated.getRole_id(), fromDb.getRole_id());
         assertEquals(updated.isActive(), fromDb.isActive());
 
         assertThrows(NullPointerException.class, () -> userDao.save(new User(-1L, "Changed",
