@@ -16,11 +16,11 @@
 
 <GridPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk.upjs.controllers.ProjectsController">
       <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="394.0" minWidth="10.0" prefWidth="145.3333740234375" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="688.0000076293945" minWidth="-Infinity" prefWidth="654.6666259765625" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="394.0" prefWidth="145.3333740234375" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="688.0000076293945" prefWidth="654.6666259765625" />
       </columnConstraints>
       <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints prefHeight="300.0" valignment="CENTER" vgrow="SOMETIMES" />
       </rowConstraints>
       <children>
           <Pane prefHeight="200.0" prefWidth="200.0">

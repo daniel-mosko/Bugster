@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<GridPane prefWidth="1007.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk.upjs.controllers.LoginController">
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1016.0" minWidth="10.0" prefWidth="536.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="588.0" minWidth="10.0" prefWidth="588.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <VBox alignment="CENTER" prefHeight="768.0" prefWidth="586.0" GridPane.columnIndex="1">
+         <children>
+            <MFXTextField fx:id="usernameTextField" floatMode="BORDER" floatingText="Username" minHeight="20.0" prefHeight="30.0" prefWidth="280.0" />
+            <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" minHeight="20.0" prefHeight="30.0" prefWidth="280.0">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </MFXPasswordField>
+            <Label fx:id="wrongCredentialsLabel" prefHeight="17.0" prefWidth="280.0" text="Wrong username or password" textFill="RED">
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </Label>
+            <MFXButton fx:id="loginButton" buttonType="RAISED" onAction="#loginUser" prefHeight="39.0" prefWidth="280.0" rippleColor="WHITE" style="-fx-background-color: #0f2272;" text="Login" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
+            </MFXButton>
+         </children>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </VBox>
+      <Pane prefHeight="700.0" prefWidth="432.0" style="-fx-background-color: linear-gradient(from 0.0% 0.0% to 45.7413% 100.0%, #005bb0 0.0%, #0f2272 100.0%)linear-gradient(from 0.0% 0.0% to 45.7413% 100.0%, #005bb0 0.0%, #0f2272 100.0%);" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+      <ImageView fitHeight="200.0" fitWidth="158.0" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+         <image>
+            <Image url="@../logo.png" />
+         </image>
+      </ImageView>
+   </children>
+</GridPane>
