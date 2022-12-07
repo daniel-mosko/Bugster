@@ -17,10 +17,10 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("login-view.fxml"));
-        stage.getIcons().add(new Image("sk/upjs/logo.png"));
+        FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("login-view-responsive.fxml"));
+        stage.getIcons().add(new Image("sk/upjs/favicon.png"));
         Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Bugster | Login");
+        stage.setTitle("Bugster - Login");
         stage.setScene(scene);
         stage.show();
     }

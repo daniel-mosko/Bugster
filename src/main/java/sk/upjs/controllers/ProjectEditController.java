@@ -36,7 +36,7 @@ public class ProjectEditController {
     private final List<User> deletedUsers = new ArrayList<>();
     private final ProjectFxModel projectModel;
     private final List<User> usersToAdd = new ArrayList<>();
-    private ObservableList<User> assignedUsers;
+    private ObservableList<User> assignedUsers = FXCollections.observableArrayList(new ArrayList<User>());
     private User selectedUser;
     private ObservableList<User> userListModel;
     private User selectedComboBoxUser;
@@ -185,17 +185,17 @@ public class ProjectEditController {
             alert.show();
             return;
         }
+        Project savedProject = projectDao.save(project);
         for (User deletedUser : deletedUsers) {
-            projectDao.deleteUserFromProject(deletedUser.getId(), projectModel.getId());
+            projectDao.deleteUserFromProject(deletedUser.getId(), savedProject.getId());
         }
         for (User userToAdd : usersToAdd) {
-            projectDao.addUserToProject(userToAdd.getId(), projectModel.getId());
+            projectDao.addUserToProject(userToAdd.getId(), savedProject.getId());
         }
         System.out.println("Deleted " + deletedUsers);
         System.out.println("Assigned " + assignedUsers);
         System.out.println("ToAdd " + usersToAdd);
         System.out.println("List " + userListModel);
-        projectDao.save(project);
         projectsMenuClick(event);
     }
 
@@ -207,14 +207,17 @@ public class ProjectEditController {
         userNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         userSurnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
 
-        assignedUsers = FXCollections.observableArrayList(userDao.getByProjectId(projectModel.getId()));
-        usersTable.setItems(assignedUsers);
 
         projectDescriptionTextArea.textProperty().bindBidirectional(projectModel.descriptionProperty());
         projectNameTextField.textProperty().bindBidirectional(projectModel.nameProperty());
 
-        // UserComboBox selection model
         userListModel = FXCollections.observableArrayList(userDao.getAll());
+        if (projectModel.getId() != null) {
+            assignedUsers.addAll(userDao.getByProjectId(projectModel.getId()));
+        }
+        usersTable.setItems(assignedUsers);
+
+        // UserComboBox selection model
         for (int i = 0; i < userListModel.size(); i++) {
             for (User assignedUser : assignedUsers) {
                 if (userListModel.get(i).getId().equals(assignedUser.getId())) {
@@ -236,8 +239,7 @@ public class ProjectEditController {
 
         // Table selection model
         TableView.TableViewSelectionModel<User> selectionModel = usersTable.getSelectionModel();
-        selectionModel.setSelectionMode(
-                SelectionMode.SINGLE);
+        selectionModel.setSelectionMode(SelectionMode.SINGLE);
         ObservableList<User> selectedItems = selectionModel.getSelectedItems();
         selectedItems.addListener(new ListChangeListener<User>() {
             @Override

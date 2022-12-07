@@ -32,6 +32,13 @@ public enum DaoFactory {
         return userDao;
     }
 
+    public ProjectDao getProjectDao() {
+        if (projectDao == null) {
+            projectDao = new MysqlProjectDao(getJdbcTemplate());
+        }
+        return projectDao;
+    }
+
     private JdbcTemplate getJdbcTemplate() {
         if (jdbcTemplate == null) {
             MysqlDataSource dataSource = new MysqlDataSource();
@@ -45,15 +52,7 @@ public enum DaoFactory {
                 dataSource.setPassword("eE87#H06g");
             }
             jdbcTemplate = new JdbcTemplate(dataSource);
-
         }
         return jdbcTemplate;
-    }
-
-    public ProjectDao getProjectDao() {
-        if (projectDao == null) {
-            projectDao = new MysqlProjectDao(getJdbcTemplate());
-        }
-        return projectDao;
     }
 }

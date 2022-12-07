@@ -7,6 +7,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.paint.LinearGradient?>
@@ -14,17 +15,29 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk.upjs.controllers.LoginController">
-   <children>
-      <MFXTextField fx:id="usernameTextField" floatMode="BORDER" floatingText="Username" layoutX="602.0" layoutY="285.0" minHeight="20.0" prefHeight="25.0" prefWidth="286.0" />
-      <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" layoutX="602.0" layoutY="334.0" minHeight="20.0" prefWidth="286.0" />
-      <MFXButton fx:id="loginButton" buttonType="RAISED" layoutX="602.0" layoutY="421.0" onAction="#loginUser" prefHeight="39.0" prefWidth="286.0" rippleColor="WHITE" style="-fx-background-color: #0f2272;" text="Login" textFill="WHITE">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </MFXButton>
-      <Label fx:id="wrongCredentialsLabel" layoutX="602.0" layoutY="384.0" prefHeight="17.0" prefWidth="237.0" text="Wrong username or password" textFill="RED" />
-      <Pane prefHeight="768.0" prefWidth="536.0">
+
+<BorderPane xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sk.upjs.controllers.LoginController">
+   <center>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0">
+         <children>
+            <MFXTextField fx:id="usernameTextField" floatMode="BORDER" floatingText="Username" layoutX="602.0" layoutY="285.0" minHeight="20.0" prefHeight="25.0" prefWidth="286.0" />
+            <MFXPasswordField fx:id="passwordField" floatMode="BORDER" floatingText="Password" layoutX="602.0" layoutY="334.0" minHeight="20.0" prefWidth="286.0" />
+            <MFXButton fx:id="loginButton" buttonType="RAISED" layoutX="602.0" layoutY="421.0" onAction="#loginUser" prefHeight="39.0" prefWidth="286.0" rippleColor="WHITE" style="-fx-background-color: #0f2272;" text="Login" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </MFXButton>
+            <Label fx:id="wrongCredentialsLabel" layoutX="602.0" layoutY="384.0" prefHeight="17.0" prefWidth="237.0" text="Wrong username or password" textFill="RED" />
+            <ImageView fitHeight="495.0" fitWidth="391.0" layoutX="14.0" layoutY="137.0">
+               <image>
+                  <Image url="@../logo.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </center>
+   <left>
+      <Pane prefHeight="768.0" prefWidth="536.0" style="-fx-background-image: ./logo.png;" BorderPane.alignment="CENTER">
          <children>
             <Rectangle height="768.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="536.0">
                <fill>
@@ -44,12 +57,7 @@
                   </LinearGradient>
                </fill>
             </Rectangle>
-            <ImageView fitHeight="495.0" fitWidth="391.0" layoutX="73.0" layoutY="118.0">
-               <image>
-                  <Image url="@../logo.png" />
-               </image>
-            </ImageView>
          </children>
       </Pane>
-   </children>
-</AnchorPane>
+   </left>
+</BorderPane>

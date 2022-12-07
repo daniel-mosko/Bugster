@@ -113,8 +113,8 @@ public class UsersController {
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
-            stage.getIcons().add(new Image("sk/upjs/logo.png"));
-            stage.setTitle("Users");
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
+            stage.setTitle("Bugster - Users");
             stage.show();
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IOException e) {
@@ -137,6 +137,7 @@ public class UsersController {
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
             stage.setScene(scene);
             stage.setTitle("Edit user");
             stage.show();

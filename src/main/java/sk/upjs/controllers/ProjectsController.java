@@ -25,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import sk.upjs.LoggedUser;
 import sk.upjs.dao.ProjectDao;
+import sk.upjs.dao.UserDao;
 import sk.upjs.entity.Project;
 import sk.upjs.entity.User;
 import sk.upjs.factory.DaoFactory;
@@ -39,6 +40,7 @@ public class ProjectsController {
 
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final ProjectDao projectDao = DaoFactory.INSTANCE.getProjectDao();
+    private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
     private ObservableList<Project> projectsModel;
     @FXML
     private MFXButton addProjectButton;
@@ -68,10 +70,13 @@ public class ProjectsController {
     private MFXButton projectsButtonMenu;
 
     @FXML
+    private MFXButton bugsButtonMenu;
+    @FXML
     private MFXLegacyTableView<Project> projectsTable;
 
     @FXML
     private MFXTextField searchBox;
+
 
     @FXML
     private MFXButton usersButtonMenu;
@@ -82,8 +87,8 @@ public class ProjectsController {
             LoggedUser.INSTANCE.setLoggedUser(null);
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("Bugster");
-            stage.getIcons().add(new Image("sk/upjs/logo.png"));
+            stage.setTitle("Bugster - Edit project");
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
             stage.setScene(scene);
             stage.show();
             ((Node) (event.getSource())).getScene().getWindow().hide();
@@ -99,7 +104,7 @@ public class ProjectsController {
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Projects");
             stage.setScene(scene);
-            stage.getIcons().add(new Image("sk/upjs/logo.png"));
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
             stage.show();
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IOException e) {
@@ -113,6 +118,10 @@ public class ProjectsController {
         showProjectEdit(controller, event);
     }
 
+    @FXML
+    void onBugsButtonMenuClick(ActionEvent event) {
+    }
+
     void showProjectEdit(ProjectEditController controller, Event event) {
         try {
             FXMLLoader fxmlLoader =
@@ -121,8 +130,9 @@ public class ProjectsController {
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent);
             Stage stage = new Stage();
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
             stage.setScene(scene);
-            stage.setTitle("Edit project");
+            stage.setTitle("Bugster - Edit project");
             stage.show();
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IOException e) {
@@ -149,6 +159,7 @@ public class ProjectsController {
         projectIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         projectNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         projectDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        // employeesCol.setCellValueFactory(new PropertyValueFactory<>("employees"));
 
         System.out.println(projects);
         projectsTable.getItems().setAll(projectsModel);

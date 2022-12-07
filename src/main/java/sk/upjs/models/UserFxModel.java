@@ -107,12 +107,12 @@ public class UserFxModel {
         return active.get();
     }
 
-    public BooleanProperty activeProperty() {
-        return active;
-    }
-
     public void setActive(boolean active) {
         this.active.set(active);
+    }
+
+    public BooleanProperty activeProperty() {
+        return active;
     }
 
     public User getUser() {

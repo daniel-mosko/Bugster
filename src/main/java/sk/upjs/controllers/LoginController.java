@@ -49,9 +49,9 @@ public class LoginController {
             FXMLLoader fxmlLoader = new FXMLLoader(ProjectsController.class.getResource("project-view.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("Hello!");
+            stage.setTitle("Bugster - Projects");
             stage.setScene(scene);
-            stage.getIcons().add(new Image("sk/upjs/logo.png"));
+            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
             stage.show();
             ((Node) (event.getSource())).getScene().getWindow().hide();
         } catch (IOException e) {

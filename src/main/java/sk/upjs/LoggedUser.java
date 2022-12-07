@@ -1,7 +1,5 @@
 package sk.upjs;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import sk.upjs.entity.User;
 
 
@@ -17,7 +15,6 @@ public enum LoggedUser {
      */
     private User loggedUser;
 
-    @Bean
     public User getLoggedUser() {
         return loggedUser;
     }
