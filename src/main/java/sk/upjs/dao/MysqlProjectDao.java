@@ -3,7 +3,9 @@ package sk.upjs.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import sk.upjs.LoggedUser;
 import sk.upjs.entity.Project;
+import sk.upjs.entity.User;
 import sk.upjs.factory.DaoFactory;
 
 import java.sql.ResultSet;
@@ -13,6 +15,7 @@ import java.util.*;
 public class MysqlProjectDao implements ProjectDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
 
     public MysqlProjectDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -34,6 +37,8 @@ public class MysqlProjectDao implements ProjectDao {
     }
 
     public Project addUserToProject(long userId, long projectId) {
+        if (loggedUser.getRole() != 1 && loggedUser.getRole() != 2)
+            throw new UnauthorizedAccessException("Only admin and project manager can add user to project");
         UserDao userDao = DaoFactory.INSTANCE.getUserDao();
         if (userDao.getById(userId) == null && getById(projectId) == null) {
             throw new NoSuchElementException();
@@ -49,13 +54,18 @@ public class MysqlProjectDao implements ProjectDao {
         return getById(projectId);
     }
 
-    public boolean deleteUserFromProject(long userId, long projectId) {
+    public boolean deleteUserFromProject(long userId, long projectId) throws UnauthorizedAccessException {
+        if (loggedUser.getRole() != 1 && loggedUser.getRole() != 2)
+            throw new UnauthorizedAccessException("Unauthorized - only admin and project manager can delete user from project");
         String sql = "DELETE FROM user_has_project where user_id=? and project_id=?";
         int changed = jdbcTemplate.update(sql, userId, projectId);
         return changed == 1; // number of affected rows
     }
 
     public Project save(Project project) {
+        if (loggedUser.getRole() != 1)
+            throw new UnauthorizedAccessException("Unauthorized - only admin can save or update project");
+
         if (project == null) throw new NullPointerException("cannot save null");
         if (project.getName() == null)
             throw new NullPointerException("Name of project is null");
@@ -85,6 +95,8 @@ public class MysqlProjectDao implements ProjectDao {
     }
 
     public boolean delete(long id) {
+        if (loggedUser.getRole() != 1)
+            throw new UnauthorizedAccessException("Unauthorized - only admin can delete project");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE project_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM project WHERE id=" + id);
         return delete1 >= 1 && delete2 == 1; // number of affected rows

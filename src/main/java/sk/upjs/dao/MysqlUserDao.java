@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import sk.upjs.LoggedUser;
 import sk.upjs.entity.Role;
 import sk.upjs.entity.User;
 
@@ -12,6 +13,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class MysqlUserDao implements UserDao {
+
+    private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final JdbcTemplate jdbcTemplate;
 
     public MysqlUserDao(JdbcTemplate jdbcTemplate) {
@@ -52,7 +55,9 @@ public class MysqlUserDao implements UserDao {
         return null;
     }
 
-    public User save(User user) {
+    public User save(User user) throws NullPointerException, UnauthorizedAccessException {
+        if (loggedUser.getRole() != 1)
+            throw new UnauthorizedAccessException("Unauthorized - only admin can save or update user");
         if (user == null) throw new NullPointerException("cannot save null");
         if (user.getName() == null || user.getSurname() == null || user.getPassword() == null
                 || user.getRole() == 0 || user.getUsername() == null || user.getEmail() == null)
@@ -94,7 +99,9 @@ public class MysqlUserDao implements UserDao {
      * @param id - user id
      * @return if delete was successful
      */
-    public boolean delete(long id) {
+    public boolean delete(long id) throws UnauthorizedAccessException {
+        if (loggedUser.getRole() != 1)
+            throw new UnauthorizedAccessException("Unauthorized - only admin can delete user");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE user_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM user WHERE id=" + id);
         return delete1 >= 1 && delete2 == 1; // number of affected rows
