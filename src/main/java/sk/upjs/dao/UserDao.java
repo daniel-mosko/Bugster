@@ -21,5 +21,7 @@ public interface UserDao {
 
     List<Role> getAllRoles();
 
+    Role getByRoleId(long id);
+
     boolean delete(long id) throws NoSuchElementException, UnauthorizedAccessException;
 }

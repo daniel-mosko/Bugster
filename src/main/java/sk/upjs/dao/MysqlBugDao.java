@@ -5,7 +5,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import sk.upjs.LoggedUser;
 import sk.upjs.entity.Bug;
+import sk.upjs.entity.Severity;
+import sk.upjs.entity.Status;
 import sk.upjs.entity.User;
+import sk.upjs.factory.DaoFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +21,7 @@ public class MysqlBugDao implements BugDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
+    private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 
     public MysqlBugDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -77,6 +81,27 @@ public class MysqlBugDao implements BugDao {
         return changed == 1; // number of affected rows
     }
 
+    public List<Status> getAllStatuses() {
+        String sql = "select id,name from status";
+        return jdbcTemplate.query(sql, new StatusRowMapper());
+    }
+
+    public List<Severity> getAllSeverities() {
+        String sql = "select id, severity_level, name from severity";
+        return jdbcTemplate.query(sql, new SeverityRowMapper());
+    }
+
+    public Severity getSeverityById(long id) {
+        String sql = "select id, severity_level, name from severity where id=?";
+        return jdbcTemplate.queryForObject(sql, new SeverityRowMapper(), id);
+    }
+
+    @Override
+    public Status getStatusById(long id) {
+        String sql = "select id,name from status where id=?";
+        return jdbcTemplate.queryForObject(sql, new StatusRowMapper(), id);
+    }
+
 
     private static class BugRowMapper implements RowMapper<Bug> {
         public Bug mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -85,11 +110,30 @@ public class MysqlBugDao implements BugDao {
             bug.setDescription(rs.getString("description"));
             bug.setCreatedAt(rs.getString("created_at"));
             bug.setUpdatedAt(rs.getString("updated_at"));
-            bug.setAssignerId(rs.getLong("assigner_id"));
+            bug.setAssigneeId(rs.getLong("assigner_id"));
             bug.setAssigneeId(rs.getLong("assignee_id"));
             bug.setStatusId(rs.getLong("status_id"));
             bug.setSeverityId(rs.getLong("severity_id"));
             return bug;
+        }
+    }
+
+    private static class StatusRowMapper implements RowMapper<Status> {
+        public Status mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Status status = new Status();
+            status.setId(rs.getInt("id"));
+            status.setName(rs.getString("name"));
+            return status;
+        }
+    }
+
+    private static class SeverityRowMapper implements RowMapper<Severity> {
+        public Severity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Severity severity = new Severity();
+            severity.setId(rs.getInt("id"));
+            severity.setSeverityLevel(rs.getInt("severity_level"));
+            severity.setName(rs.getString("name"));
+            return severity;
         }
     }
 }

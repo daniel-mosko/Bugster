@@ -15,7 +15,6 @@ import java.util.*;
 
 public class MysqlUserDao implements UserDao {
 
-    private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final JdbcTemplate jdbcTemplate;
 
     public MysqlUserDao(JdbcTemplate jdbcTemplate) {
@@ -37,10 +36,14 @@ public class MysqlUserDao implements UserDao {
         return users;
     }
 
-    @Override
     public List<Role> getAllRoles() {
         String sql = "select id,name from role";
         return jdbcTemplate.query(sql, new RoleRowMapper());
+    }
+
+    public Role getByRoleId(long id) {
+        String sql = "select id,name from role where id=?";
+        return jdbcTemplate.queryForObject(sql, new RoleRowMapper(), id);
     }
 
     public List<User> getAll() {
@@ -104,7 +107,7 @@ public class MysqlUserDao implements UserDao {
      * @return if delete was successful
      */
     public boolean delete(long id) throws UnauthorizedAccessException {
-        if (loggedUser.getRole_id() != 1)
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can delete user");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE user_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM user WHERE id=" + id);

@@ -1,7 +1,10 @@
 package sk.upjs.models;
 
 import javafx.beans.property.*;
+import sk.upjs.dao.UserDao;
+import sk.upjs.entity.Role;
 import sk.upjs.entity.User;
+import sk.upjs.factory.DaoFactory;
 
 public class UserFxModel {
 
@@ -11,8 +14,10 @@ public class UserFxModel {
     private StringProperty username = new SimpleStringProperty();
     private StringProperty password = new SimpleStringProperty();
     private StringProperty email = new SimpleStringProperty();
-    private IntegerProperty role_id = new SimpleIntegerProperty();
+    private ObjectProperty<Role> role = new SimpleObjectProperty<>();
     private BooleanProperty active = new SimpleBooleanProperty();
+
+    private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 
     public UserFxModel(User user) {
         this.id = user.getId();
@@ -22,7 +27,7 @@ public class UserFxModel {
         password.set(user.getPassword()); // zvazit
         email.set(user.getEmail());
         active.set(user.isActive());
-        role_id.set(user.getRole_id());
+        role.set(userDao.getByRoleId(user.getRole_id()));
     }
 
     public UserFxModel() {
@@ -92,16 +97,17 @@ public class UserFxModel {
         return email;
     }
 
-    public int getRole_id() {
-        return role_id.get();
+
+    public Role getRole() {
+        return role.get();
     }
 
-    public void setRole_id(int role_id) {
-        this.role_id.set(role_id);
+    public void setRole(Role role) {
+        this.role.set(role);
     }
 
-    public IntegerProperty role_idProperty() {
-        return role_id;
+    public ObjectProperty<Role> roleProperty() {
+        return role;
     }
 
     public boolean isActive() {
@@ -117,9 +123,6 @@ public class UserFxModel {
     }
 
     public User getUser() {
-        return new User(getId(), getName(), getSurname(), getUsername(), getPassword(), getEmail(), getRole_id(), isActive());
-    }
-
-    public void setUser(User user) {
+        return new User(getId(), getName(), getSurname(), getUsername(), getPassword(), getEmail(), getRole().getId(), isActive());
     }
 }

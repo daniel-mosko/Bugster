@@ -112,4 +112,5 @@ public class Bug {
                 ", severityId=" + severityId +
                 '}';
     }
+
 }

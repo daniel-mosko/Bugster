@@ -28,7 +28,6 @@ public class UserEditController {
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
     private final UserFxModel userModel;
-    private Role selectedRole;
     @FXML
     private MFXButton deleteUserButton;
     @FXML
@@ -92,7 +91,7 @@ public class UserEditController {
     void onSaveUserButtonClick(ActionEvent event) {
         User user = userModel.getUser();
         boolean userHasPassword = user.getId() != null && !userDao.getById(user.getId()).getPassword().isBlank();
-        user.setRole_id(selectedRole.getId());
+        // user.setRole_id(selectedRole.getId());
         if (user.getName() == null || user.getName().isBlank()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setContentText("Enter user name");
@@ -158,28 +157,17 @@ public class UserEditController {
         userSurnameField.textProperty().bindBidirectional(userModel.surnameProperty());
         userUsernameField.textProperty().bindBidirectional(userModel.usernameProperty());
         userEmailField.textProperty().bindBidirectional(userModel.emailProperty());
-        // userRoleComboBox.getSelectionModel().bindItemBidirectional(userModel.role_idProperty());
+        userRoleComboBox.valueProperty().bindBidirectional(userModel.roleProperty());
         isActiveButton.selectedProperty().bindBidirectional(userModel.activeProperty());
 
         ObservableList<Role> roles = FXCollections.observableArrayList(userDao.getAllRoles());
         userRoleComboBox.setItems(roles);
+
         if (userModel.getId() != null) {
-            for (Role role : roles) {
-                if (role.getId() == userModel.getRole_id()) {
-                    selectedRole = role;
-                    break;
-                }
-            }
-            userRoleComboBox.selectItem(selectedRole);
+            userRoleComboBox.selectItem(roles.stream().filter(r -> r.getId() == userModel.getRole().getId()).toList().get(0));
         } else {
             userRoleComboBox.selectFirst();
-            selectedRole = userRoleComboBox.getSelectedItem();
         }
-        userRoleComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                selectedRole = newValue;
-            }
-        });
     }
 
 }

@@ -109,7 +109,7 @@ public class ProjectsController {
         }
     }
 
-    private static void bugsMenuClick(ActionEvent event) {
+    static void bugsMenuClick(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(BugsController.class.getResource("bug-view-borderPane.fxml"));
             Stage stage = new Stage();
@@ -171,7 +171,6 @@ public class ProjectsController {
         projectIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         projectNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         projectDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        // employeesCol.setCellValueFactory(new PropertyValueFactory<>("employees"));
 
         System.out.println(projects);
         projectsTable.getItems().setAll(projectsModel);
