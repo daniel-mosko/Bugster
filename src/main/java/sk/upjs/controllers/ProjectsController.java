@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static sk.upjs.controllers.BugsController.bugsMenuClick;
 import static sk.upjs.controllers.UsersController.usersMenuClick;
 
 public class ProjectsController {
@@ -80,7 +81,7 @@ public class ProjectsController {
 
     static void logout(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("login-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("login-view-responsive.fxml"));
             LoggedUser.INSTANCE.setLoggedUser(null);
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
@@ -96,7 +97,7 @@ public class ProjectsController {
 
     static void projectsMenuClick(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("project-view.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(ProjectsController.class.getResource("project-view.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Projects");
@@ -109,20 +110,7 @@ public class ProjectsController {
         }
     }
 
-    static void bugsMenuClick(ActionEvent event) {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(BugsController.class.getResource("bug-view-borderPane.fxml"));
-            Stage stage = new Stage();
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("Bugs");
-            stage.setScene(scene);
-            stage.getIcons().add(new Image("sk/upjs/favicon.png"));
-            stage.show();
-            ((Node) (event.getSource())).getScene().getWindow().hide();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @FXML
     void addProjectButtonClick(ActionEvent event) {

@@ -5,6 +5,7 @@ import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -196,6 +197,11 @@ public class UsersController {
         userUsernameCol.setCellValueFactory(new PropertyValueFactory<>("username"));
         userEmailCol.setCellValueFactory(new PropertyValueFactory<>("email"));
         userRoleCol.setCellValueFactory(new PropertyValueFactory<>("role_id"));
+        userRoleCol.setCellValueFactory(p -> {
+            SimpleStringProperty str = new SimpleStringProperty();
+            str.setValue(userDao.getByRoleId(p.getValue().getRole_id()).getName());
+            return str;
+        });
         userActiveCol.setCellValueFactory(new PropertyValueFactory<>("active"));
 
         usersList = FXCollections.observableArrayList(userDao.getAll());

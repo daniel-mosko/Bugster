@@ -14,7 +14,6 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
@@ -39,7 +38,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
                   </Label>
-                  <MFXLegacyTableView fx:id="projectsTable" editable="true" prefHeight="397.0" prefWidth="723.0" GridPane.rowIndex="2">
+                  <MFXLegacyTableView fx:id="bugsTable" editable="true" prefHeight="397.0" prefWidth="723.0" GridPane.rowIndex="2">
                       <columns>
                           <TableColumn fx:id="bugIdCol" maxWidth="75.0" minWidth="50.0" prefWidth="50.0" text="ID" />
                           <TableColumn fx:id="projectNameCol" maxWidth="218.5" minWidth="75.0" prefWidth="218.5" text="Project" />
@@ -58,18 +57,93 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                </columnResizePolicy>
                   </MFXLegacyTableView>
-            <Pane maxHeight="201.0" maxWidth="619.0" minHeight="0.0" prefHeight="79.0" prefWidth="619.0" GridPane.rowIndex="1">
+            <GridPane GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="521.0" minWidth="140.0" prefWidth="160.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="521.0" minWidth="140.0" prefWidth="160.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="521.0" minWidth="120.0" prefWidth="140.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="521.0" minWidth="120.0" prefWidth="120.0" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="795.0" minWidth="140.0" prefWidth="610.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <MFXTextField fx:id="filterProjectField" floatMode="BORDER" floatingText="Project" layoutX="147.0" layoutY="46.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
-                  <MFXTextField fx:id="filterUsernameField" floatMode="BORDER" floatingText="Username" layoutX="9.0" layoutY="46.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" />
-                  <MFXComboBox fx:id="filterStatusComboBox" floatMode="BORDER" floatingText="Status" layoutX="9.0" layoutY="6.0" minHeight="0.0" prefHeight="30.0" prefWidth="122.0" />
-                  <MFXButton fx:id="filterApplyButton" depthLevel="LEVEL4" layoutX="408.0" layoutY="6.0" onAction="#onFilterApplyButtonClick" prefHeight="30.0" prefWidth="73.0" style="-fx-background-color: #001F43;" text="OK" textFill="WHITE" />
-                  <MFXToggleButton fx:id="filterMyBugsButton" layoutX="285.0" layoutY="40.0" selected="true" text="My bugs" />
-                  <MFXButton fx:id="addBugButton" depthLevel="LEVEL4" layoutX="497.0" onAction="#onAddUserButtonClick" prefHeight="79.0" prefWidth="122.0" style="-fx-background-color: #001F43;" text="Add new bug" textFill="WHITE" />
-                  <MFXButton fx:id="filterClearButton" layoutX="408.0" layoutY="45.0" onAction="#onFilterClearButtonClick" prefHeight="25.0" prefWidth="73.0" style="-fx-background-color: red;" text="Clear" textFill="WHITE" />
-                  <MFXComboBox fx:id="filterSeverityComboBox" floatMode="BORDER" floatingText="Severity" layoutX="147.0" layoutY="7.0" minHeight="0.0" prefHeight="30.0" prefWidth="122.0" />
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="140.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <MFXComboBox fx:id="filterStatusComboBox" floatMode="BORDER" floatingText="Status" minHeight="0.0" prefHeight="30.0" prefWidth="122.0">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </MFXComboBox>
+                        <MFXTextField fx:id="filterUsernameField" floatMode="BORDER" floatingText="Username" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="122.0" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </MFXTextField>
+                     </children>
+                  </GridPane>
+                  <GridPane GridPane.columnIndex="1">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="140.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <MFXComboBox fx:id="filterSeverityComboBox" floatMode="BORDER" floatingText="Severity" minHeight="0.0" prefHeight="30.0" prefWidth="122.0">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </MFXComboBox>
+                        <MFXComboBox fx:id="filterProjectComboBox" floatMode="BORDER" floatingText="Project" minHeight="0.0" prefHeight="30.0" prefWidth="122.0" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </MFXComboBox>
+                     </children>
+                  </GridPane>
+                  <MFXToggleButton fx:id="filterMyBugsButton" selected="true" text="My bugs" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </MFXToggleButton>
+                  <GridPane GridPane.columnIndex="3">
+                    <columnConstraints>
+                      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <MFXButton fx:id="filterApplyButton" depthLevel="LEVEL4" onAction="#onFilterApplyButtonClick" prefHeight="30.0" prefWidth="73.0" style="-fx-background-color: #001F43;" text="OK" textFill="WHITE">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </MFXButton>
+                        <MFXButton fx:id="filterClearButton" onAction="#onFilterClearButtonClick" prefHeight="25.0" prefWidth="73.0" style="-fx-background-color: red;" text="Clear" textFill="WHITE" GridPane.rowIndex="1">
+                           <GridPane.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </GridPane.margin>
+                        </MFXButton>
+                     </children>
+                  </GridPane>
+                  <MFXButton fx:id="addBugButton" depthLevel="LEVEL4" onAction="#onAddBugButtonClick" prefHeight="79.0" prefWidth="122.0" style="-fx-background-color: #001F43;" text="Add new bug" textFill="WHITE" GridPane.columnIndex="4">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </MFXButton>
                </children>
-            </Pane>
+            </GridPane>
          </children>
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" />
