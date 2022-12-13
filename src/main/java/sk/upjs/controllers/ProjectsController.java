@@ -97,7 +97,7 @@ public class ProjectsController {
 
     static void projectsMenuClick(ActionEvent event) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(LoginController.class.getResource("project-view-borderPane.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(ProjectsController.class.getResource("project-view.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle("Projects");

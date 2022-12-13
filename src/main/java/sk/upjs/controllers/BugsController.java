@@ -6,8 +6,6 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableStringValue;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -134,8 +132,6 @@ public class BugsController {
     private MFXButton usersButtonMenu;
 
 
-
-
     static void bugsMenuClick(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(BugsController.class.getResource("bug-view-borderPane.fxml"));
@@ -200,12 +196,12 @@ public class BugsController {
     void onFilterApplyButtonClick(ActionEvent event) {
         System.out.println("Filtered list:" + bugsFilteredList);
         bugsFilteredList = FXCollections.observableArrayList(bugsList.stream().filter(
-                 bug -> (userDao.getById(bug.getAssigneeId()).getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase())
-                        || userDao.getById(bug.getAssignerId()).getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase()))
-                        && (filterSelectedProject == null || bug.getProjectId() == filterSelectedProject.getId())
-                        && (filterSelectedStatus == null || bug.getStatusId() == filterSelectedStatus.getId())
-                        && (filterSelectedSeverity == null || bug.getSeverityId() == filterSelectedSeverity.getId())
-                        && (!filterMyBugsButton.isSelected() || (bug.getAssigneeId() == loggedUser.getId() || bug.getAssignerId() == loggedUser.getId()) == filterMyBugsButton.isSelected()))
+                        bug -> (userDao.getById(bug.getAssigneeId()).getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase())
+                                || userDao.getById(bug.getAssignerId()).getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase()))
+                                && (filterSelectedProject == null || bug.getProjectId() == filterSelectedProject.getId())
+                                && (filterSelectedStatus == null || bug.getStatusId() == filterSelectedStatus.getId())
+                                && (filterSelectedSeverity == null || bug.getSeverityId() == filterSelectedSeverity.getId())
+                                && (!filterMyBugsButton.isSelected() || (bug.getAssigneeId() == loggedUser.getId() || bug.getAssignerId() == loggedUser.getId()) == filterMyBugsButton.isSelected()))
                 .toList());
         System.out.println(bugsFilteredList);
         bugsTable.setItems(bugsFilteredList);
