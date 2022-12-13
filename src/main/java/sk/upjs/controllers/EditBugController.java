@@ -16,6 +16,7 @@ import sk.upjs.entity.*;
 import sk.upjs.factory.DaoFactory;
 import sk.upjs.models.BugFxModel;
 
+import static sk.upjs.controllers.BugsController.bugsMenuClick;
 import static sk.upjs.controllers.ProjectsController.*;
 import static sk.upjs.controllers.UsersController.usersMenuClick;
 

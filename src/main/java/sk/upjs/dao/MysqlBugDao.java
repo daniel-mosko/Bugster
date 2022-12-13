@@ -107,10 +107,11 @@ public class MysqlBugDao implements BugDao {
         public Bug mapRow(ResultSet rs, int rowNum) throws SQLException {
             Bug bug = new Bug();
             bug.setId(rs.getLong("id"));
+            bug.setProjectId(rs.getLong("project_id"));
             bug.setDescription(rs.getString("description"));
             bug.setCreatedAt(rs.getString("created_at"));
             bug.setUpdatedAt(rs.getString("updated_at"));
-            bug.setAssigneeId(rs.getLong("assigner_id"));
+            bug.setAssignerId(rs.getLong("assigner_id"));
             bug.setAssigneeId(rs.getLong("assignee_id"));
             bug.setStatusId(rs.getLong("status_id"));
             bug.setSeverityId(rs.getLong("severity_id"));
