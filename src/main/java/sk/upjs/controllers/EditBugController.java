@@ -92,7 +92,7 @@ public class EditBugController {
     @FXML
     void onSaveBugButtonClick(ActionEvent event) {
         Bug bug = bugModel.getBug();
-
+        System.out.println(bug);
     }
 
     @FXML
@@ -109,24 +109,30 @@ public class EditBugController {
         projectComboBox.valueProperty().bindBidirectional(bugModel.projectProperty());
         // createdAtLabel.textProperty().bindBidirectional(bugModel.created_atProperty());
         // updatedAtLabel.textProperty().bindBidirectional(bugModel.updated_atProperty());
+        createdAtLabel.setText(bugModel.getCreated_at().toString());
+        updatedAtLabel.setText(bugModel.getUpdated_at().toString());
         severityComboBox.valueProperty().bindBidirectional(bugModel.severityProperty());
         statusComboBox.valueProperty().bindBidirectional(bugModel.statusProperty());
 
         ObservableList<Status> statuses = FXCollections.observableArrayList(bugDao.getAllStatuses());
         ObservableList<Severity> severities = FXCollections.observableArrayList(bugDao.getAllSeverities());
         ObservableList<Project> projects = FXCollections.observableArrayList(projectDao.getAll());
+        ObservableList<User> users = FXCollections.observableArrayList(userDao.getAll());
         statusComboBox.setItems(statuses);
         severityComboBox.setItems(severities);
         projectComboBox.setItems(projects);
+        assignedUserComboBox.setItems(users);
 
         if (bugModel.getId() != null) {
             severityComboBox.selectItem(severities.stream().filter(r -> r.getId() == bugModel.getSeverity().getId()).toList().get(0));
             statusComboBox.selectItem(statuses.stream().filter(r -> r.getId() == bugModel.getStatus().getId()).toList().get(0));
             projectComboBox.selectItem(projects.stream().filter(r -> r.getId().equals(bugModel.getProject().getId())).toList().get(0));
+            assignedUserComboBox.selectItem(users.stream().filter(r -> r.getId() == bugModel.getAssignee().getId()).toList().get(0));
         } else {
             severityComboBox.selectFirst();
             statusComboBox.selectFirst();
             projectComboBox.selectFirst();
+            assignedUserComboBox.selectFirst();
         }
     }
 }

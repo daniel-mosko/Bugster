@@ -60,8 +60,8 @@ public class MysqlBugDao implements BugDao {
             Long id = sjdbcInsert.executeAndReturnKey(values).longValue();
             return new Bug(id, bug.getDescription(), bug.getCreatedAt(), bug.getUpdatedAt(), bug.getProjectId(), bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
         } else { // UPDATE
-            String sql = "UPDATE bug SET name=?, description=?,created_at=?,updated_at=?,project_id=?,assigner_id=?,asignee_id=?,status_id=?,severity_id=? WHERE id = " + bug.getId();
-            int changed = jdbcTemplate.update(sql, bug.getDescription(), bug.getCreatedAt(), bug.getUpdatedAt(), bug.getProjectId(), bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
+            String sql = "UPDATE bug SET name=?, description=?,created_at=?,NOW(),project_id=?,assigner_id=?,asignee_id=?,status_id=?,severity_id=? WHERE id = " + bug.getId();
+            int changed = jdbcTemplate.update(sql, bug.getDescription(), bug.getCreatedAt(), bug.getProjectId(), bug.getAssignerId(), bug.getAssigneeId(), bug.getStatusId(), bug.getSeverityId());
             if (changed == 1) return bug;
             throw new NoSuchElementException("Bug with id " + bug.getId() + " not in DB");
         }

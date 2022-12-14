@@ -17,8 +17,8 @@ public class BugFxModel {
     private Long id;
     private StringProperty description = new SimpleStringProperty();
     private ObjectProperty<Project> project = new SimpleObjectProperty<>();
-    private ObjectProperty<LocalDateTime> created_at;
-    private ObjectProperty<LocalDateTime> updated_at;
+    private ObjectProperty<LocalDateTime> created_at= new SimpleObjectProperty<>();
+    private ObjectProperty<LocalDateTime> updated_at= new SimpleObjectProperty<>();
     private ObjectProperty<User> assigner = new SimpleObjectProperty<>();
     private ObjectProperty<User> assignee = new SimpleObjectProperty<>();
     private ObjectProperty<Status> status = new SimpleObjectProperty<>();
@@ -34,7 +34,7 @@ public class BugFxModel {
         this.id = bug.getId();
         description.set(bug.getDescription());
         project.set(projectDao.getById(bug.getProjectId()));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         created_at.set(LocalDateTime.parse(bug.getCreatedAt(), formatter));
         updated_at.set(LocalDateTime.parse(bug.getUpdatedAt(), formatter));
         assigner.set(userDao.getById(bug.getAssignerId()));
