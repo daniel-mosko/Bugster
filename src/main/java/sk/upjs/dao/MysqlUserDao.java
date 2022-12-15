@@ -21,11 +21,13 @@ public class MysqlUserDao implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public User getById(long id) {
         String sql = "select id,name,surname,username,password,email,role_id,active from user where id=" + id;
         return jdbcTemplate.queryForObject(sql, new UserRowMapper());
     }
 
+    @Override
     public List<User> getByProjectId(long id) {
         String sql = "select user_id from user_has_project where project_id=" + id;
         List<Long> usersIds = jdbcTemplate.query(sql, new UserHasProjectRowMapper());
@@ -36,30 +38,32 @@ public class MysqlUserDao implements UserDao {
         return users;
     }
 
+    @Override
     public List<Role> getAllRoles() {
         String sql = "select id,name from role";
         return jdbcTemplate.query(sql, new RoleRowMapper());
     }
 
+    @Override
     public Role getByRoleId(long id) {
         String sql = "select id,name from role where id=?";
         return jdbcTemplate.queryForObject(sql, new RoleRowMapper(), id);
     }
 
+    @Override
     public List<User> getAll() {
         String sql = "select id,name,surname,username,password,email,role_id,active from user";
         return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
+    @Override
     public User getByUsername(String username) {
         String sql = "select id,name,surname,username,password,email,role_id,active from user where username=?";
-        List<User> query = jdbcTemplate.query(sql, new UserRowMapper(), username);
-        if (query.size() == 1)
-            return query.get(0);
-        return null;
+        return jdbcTemplate.queryForObject(sql, new UserRowMapper(), username);
     }
 
-    public User save(User user) throws NullPointerException, UnauthorizedAccessException {
+    @Override
+    public User save(User user) throws NullPointerException, NoSuchElementException, UnauthorizedAccessException {
         if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can save or update user");
         if (user == null) throw new NullPointerException("cannot save null");

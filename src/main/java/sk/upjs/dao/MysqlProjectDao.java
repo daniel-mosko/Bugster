@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import sk.upjs.LoggedUser;
 import sk.upjs.entity.Project;
-import sk.upjs.entity.User;
 import sk.upjs.factory.DaoFactory;
 
 import java.sql.ResultSet;
@@ -15,17 +14,18 @@ import java.util.*;
 public class MysqlProjectDao implements ProjectDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
 
     public MysqlProjectDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
     public Project getById(long id) {
         String sql = "select id,name,description from project where id=?";
         return jdbcTemplate.queryForObject(sql, new ProjectRowMapper(), id);
     }
 
+    @Override
     public List<Project> getByUserId(long id) {
         String sql = "select user_id,project_id from user_has_project where user_id=?";
         List<Long> projectsIds = jdbcTemplate.query(sql, new UserHasProjectRowMapper(), id);
@@ -36,11 +36,12 @@ public class MysqlProjectDao implements ProjectDao {
         return projects;
     }
 
+    @Override
     public Project addUserToProject(long userId, long projectId) throws NoSuchElementException, UnauthorizedAccessException {
-        if (loggedUser.getRole_id() != 1 && loggedUser.getRole_id() != 2)
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1 && LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 2)
             throw new UnauthorizedAccessException("Only admin and project manager can add user to project");
         UserDao userDao = DaoFactory.INSTANCE.getUserDao();
-        if (userDao.getById(userId) == null && getById(projectId) == null) {
+        if (userDao.getById(userId) == null || getById(projectId) == null) {
             throw new NoSuchElementException();
         }
         SimpleJdbcInsert sjdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
@@ -54,16 +55,18 @@ public class MysqlProjectDao implements ProjectDao {
         return getById(projectId);
     }
 
+    @Override
     public boolean deleteUserFromProject(long userId, long projectId) throws UnauthorizedAccessException {
-        if (loggedUser.getRole_id() != 1 && loggedUser.getRole_id() != 2)
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1 && LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 2)
             throw new UnauthorizedAccessException("Unauthorized - only admin and project manager can delete user from project");
         String sql = "DELETE FROM user_has_project where user_id=? and project_id=?";
         int changed = jdbcTemplate.update(sql, userId, projectId);
         return changed == 1; // number of affected rows
     }
 
+    @Override
     public Project save(Project project) throws NoSuchElementException, NullPointerException, UnauthorizedAccessException {
-        if (loggedUser.getRole_id() != 1)
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can save or update project");
         if (project == null) throw new NullPointerException("cannot save null");
         if (project.getName() == null)
@@ -88,13 +91,15 @@ public class MysqlProjectDao implements ProjectDao {
         }
     }
 
+    @Override
     public List<Project> getAll() {
         String sql = "select id,name,description from project";
         return jdbcTemplate.query(sql, new ProjectRowMapper());
     }
 
-    public boolean delete(long id) {
-        if (loggedUser.getRole_id() != 1)
+    @Override
+    public boolean delete(long id) throws NoSuchElementException, UnauthorizedAccessException {
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can delete project");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE project_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM project WHERE id=" + id);
