@@ -71,12 +71,15 @@ class MysqlBugDaoTest {
     @AfterEach
     void tearDown() {
         bugDao.delete(savedBug.getId());
+        userDao.delete(savedAssignee.getId());
+        userDao.delete(savedAssigner.getId());
+        projectDao.delete(savedProject.getId());
     }
 
     @Test
     void getById() {
         Bug bugFromDb = bugDao.getById(savedBug.getId());
-        assertEquals(bugFromDb.getId(), savedBug.getId());
+        assertEquals(bugFromDb.getId(), savedBug.getId()); // bugId recieved from db equals saved bugId
         assertThrows(EmptyResultDataAccessException.class, () -> bugDao.getById(-1));
     }
 
@@ -90,16 +93,16 @@ class MysqlBugDaoTest {
 
     @Test
     void insert() {
-        assertThrows(NullPointerException.class, () -> bugDao.save(null));
+        assertThrows(NullPointerException.class, () -> bugDao.save(null)); // null object save
         int size = bugDao.getAll().size();
+        Project savedProject = projectDao.save(new Project(null, "testName", "testDescription")); // save project
+        User savedAssigner = userDao.save(new User(null, "Jakub", "Testovic", "jtest",
+                "pass123", "test@test.com", 2, true)); // save assigner
 
-        savedProject = projectDao.save(new Project(null, "testName", "testDescription"));
-        savedAssigner = userDao.save(new User(null, "Jakub", "Testovic", "jtest",
+        User savedAssignee = userDao.save(new User(null, "Daniel", "Testovic", "jtest", // save assignee
                 "pass123", "test@test.com", 2, true));
 
-        savedAssignee = userDao.save(new User(null, "Daniel", "Testovic", "jtest",
-                "pass123", "test@test.com", 2, true));
-
+        // insert new bug
         Bug bug = new Bug();
         bug.setDescription("Please change font to comic sens :D");
         long now = System.currentTimeMillis();
@@ -112,8 +115,15 @@ class MysqlBugDaoTest {
         bug.setSeverityId(1);
         Bug saved = bugDao.save(bug);
         assertEquals(size + 1, bugDao.getAll().size());
+
+        // check if saved bug with given id exists in DB
         assertNotNull(saved.getId());
+        // delete test
         bugDao.delete(saved.getId());
+
+        projectDao.delete(savedProject.getId());
+        userDao.delete(savedAssigner.getId());
+        userDao.delete(savedAssignee.getId());
 
         assertThrows(DataIntegrityViolationException.class, () -> bugDao.save(new Bug(null, null, null,
                 null, 0, 0, 0, 0, 0)));
@@ -126,18 +136,18 @@ class MysqlBugDaoTest {
 
     @Test
     void update() {
-        Project changedProject = projectDao.save(new Project(null, "Changed testName", "Changed testDescription"));
-        User changedAssigner = userDao.save(new User(null, "Changed assigner", "Changed surname",
-                "Changed username", "Changed password", "Changed email", 2, false));
+        savedProject = projectDao.save(new Project(savedProject.getId(), "Changed testName", "Changed testDescription"));
+        savedAssigner = userDao.save(new User(savedAssigner.getId(), "Changed assigner", "Changed surname",
+                "Changed username", "Changed password", "Changed email", 2, true));
 
-        User changedAssignee = userDao.save(new User(null, "Changed assignee", "Changed surname",
-                "Changed username", "Changed password", "Changed email", 2, false));
+        savedAssignee = userDao.save(new User(savedAssignee.getId(), "Changed assignee", "Changed surname",
+                "Changed username", "Changed password", "Changed email", 2, true));
 
         Bug updated = new Bug(savedBug.getId(), "Changed discription", "2022-05-04 16:54:42",
-                "2022-06-04 05:24:23", changedProject.getId(), changedAssigner.getId(), changedAssignee.getId(), 1, 1);
-        int size = bugDao.getAll().size();
-        System.out.println(updated);
+                "2022-06-04 05:24:23", savedProject.getId(), savedAssigner.getId(), savedAssignee.getId(), 1, 1);
+        int size = bugDao.getAll().size(); // number of bugs in DB
         bugDao.save(updated);
+        // check if number of bugs in DB is the same after update
         assertEquals(size, bugDao.getAll().size());
 
         Bug fromDb = bugDao.getById(updated.getId());
@@ -152,6 +162,6 @@ class MysqlBugDaoTest {
         assertEquals(updated.getSeverityId(), fromDb.getSeverityId());
 
         assertThrows(NoSuchElementException.class, () -> bugDao.save(new Bug(-1L, "Changed discription", "Changed created_at",
-                "Changed updated_at", changedProject.getId(), changedAssigner.getId(), changedAssignee.getId(), 1, 1)));
+                "Changed updated_at", savedProject.getId(), savedAssigner.getId(), savedAssignee.getId(), 1, 1)));
     }
 }
