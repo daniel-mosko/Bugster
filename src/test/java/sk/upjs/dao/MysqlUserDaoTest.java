@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
+import sk.upjs.LoggedUser;
 import sk.upjs.entity.Project;
 import sk.upjs.entity.User;
 import sk.upjs.factory.DaoFactory;
@@ -33,8 +34,9 @@ class MysqlUserDaoTest {
         user.setUsername("jtest");
         user.setPassword("pass123");
         user.setEmail("test@test.com");
-        user.setRole_id(3);
+        user.setRole_id(1);
         user.setActive(true);
+        LoggedUser.INSTANCE.setLoggedUser(new User(user));
         savedUser = userDao.save(user);
     }
 

@@ -38,10 +38,8 @@ public class LoginController {
 
     @FXML
     void loginUser(ActionEvent event) {
-        // dmosko , password
         User user = userDao.getByUsername(usernameTextField.getText());
-
-        if (user == null || !BCrypt.checkpw(passwordField.getText(), user.getPassword())) {
+        if (user == null || !user.isActive() || !BCrypt.checkpw(passwordField.getText(), user.getPassword())) {
             wrongCredentialsLabel.setVisible(true);
             return;
         }
