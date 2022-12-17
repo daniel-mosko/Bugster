@@ -18,23 +18,24 @@ import sk.upjs.entity.*;
 import sk.upjs.factory.DaoFactory;
 import sk.upjs.models.BugFxModel;
 
+import java.util.List;
 import java.util.Optional;
 
 import static sk.upjs.controllers.BugsController.bugsMenuClick;
-import static sk.upjs.controllers.ProjectsController.*;
+import static sk.upjs.controllers.ProjectsController.logout;
+import static sk.upjs.controllers.ProjectsController.projectsMenuClick;
 import static sk.upjs.controllers.UsersController.usersMenuClick;
 
 public class EditBugController {
 
+    ObservableList<User> users;
     private User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private UserDao userDao = DaoFactory.INSTANCE.getUserDao();
     private ProjectDao projectDao = DaoFactory.INSTANCE.getProjectDao();
     private BugDao bugDao = DaoFactory.INSTANCE.getBugDao();
-
     private Status selectedStatus;
     private Severity selectedSeverity;
     private Project selectedProject;
-
     private java.util.Date dt = new java.util.Date();
     private java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private String currentDate = formater.format(dt);
@@ -108,6 +109,22 @@ public class EditBugController {
 
     @FXML
     void onSaveBugButtonClick(ActionEvent event) {
+        if (assignedUserComboBox.getSelectedItem() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Assigned user cannot be null");
+            alert.setHeaderText("Assigned user cannot be null.");
+            alert.setContentText("You are trying to save bug without assigned user");
+            Optional<ButtonType> confirm = alert.showAndWait();
+            return;
+        }
+        if (bugModel.getDescription() == null || bugModel.getDescription().isBlank() || bugModel.getDescription().length() > 80) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Bug description is empty or too long");
+            alert.setHeaderText("Bug description is empty or too long");
+            alert.setContentText("You are trying to save bug, but description is empty or too long (max 80 chars)");
+            Optional<ButtonType> confirm = alert.showAndWait();
+            return;
+        }
         if (bugModel.getId() != null) {
             bugModel.setUpdated_at(currentDate);
         } else {
@@ -115,6 +132,7 @@ public class EditBugController {
             bugModel.setUpdated_at(currentDate);
         }
         Bug bug = bugModel.getBug();
+
         if (loggedUser.getRole_id() == 3) {
             bugDao.changeStatus(bug.getStatusId(), bug.getId());
         } else {
@@ -132,7 +150,10 @@ public class EditBugController {
     @FXML
     void initialize() {
         loggedUserNameField.setText(loggedUser.getName() + " " + loggedUser.getSurname());
-
+        // if logged user is not ADMIN, hide USERS button in menu
+        if (loggedUser.getRole_id() != 1) {
+            usersButtonMenu.setVisible(false);
+        }
 
         bugDescription.textProperty().bindBidirectional(bugModel.descriptionProperty());
         assignedUserComboBox.valueProperty().bindBidirectional(bugModel.assigneeProperty());
@@ -144,17 +165,18 @@ public class EditBugController {
 
         ObservableList<Status> statuses = FXCollections.observableArrayList(bugDao.getAllStatuses());
         ObservableList<Severity> severities = FXCollections.observableArrayList(bugDao.getAllSeverities());
-        ObservableList<Project> projects = FXCollections.observableArrayList(projectDao.getAll());
-        ObservableList<User> users = FXCollections.observableArrayList(userDao.getAll());
+        ObservableList<Project> projects = FXCollections.observableArrayList(projectDao.getByUserId(loggedUser.getId()));
+        if (loggedUser.getRole_id() == 1) {
+            projects = FXCollections.observableArrayList(projectDao.getAll());
+        }
         statusComboBox.setItems(statuses);
         severityComboBox.setItems(severities);
         projectComboBox.setItems(projects);
-        assignedUserComboBox.setItems(users);
 
         if (bugModel.getId() != null) {
-            //only admin and project manager can edit other than status in bug
+            //only admin and project manager can edit anything else than status in bug
             if (!(loggedUser.getRole_id() == 1 || (loggedUser.getRole_id() == 2 &&
-                userDao.getByProjectId(bugModel.getProject().getId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0))) {
+                    userDao.getByProjectId(bugModel.getProject().getId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0))) {
                 deleteBugButton.setDisable(true);
                 severityComboBox.setDisable(true);
                 projectComboBox.setDisable(true);
@@ -166,14 +188,35 @@ public class EditBugController {
             severityComboBox.selectItem(severities.stream().filter(r -> r.getId() == bugModel.getSeverity().getId()).toList().get(0));
             statusComboBox.selectItem(statuses.stream().filter(r -> r.getId() == bugModel.getStatus().getId()).toList().get(0));
             projectComboBox.selectItem(projects.stream().filter(r -> r.getId().equals(bugModel.getProject().getId())).toList().get(0));
-            assignedUserComboBox.selectItem(users.stream().filter(r -> r.getId().equals(bugModel.getAssignee().getId())).toList().get(0));
+            selectedProject = projectComboBox.getSelectedItem();
+            users = FXCollections.observableArrayList(userDao.getByProjectId(selectedProject.getId()));
+            assignedUserComboBox.setItems(users);
+
+            List<User> u = users.stream().filter(r -> r.getId().equals(bugModel.getAssignee().getId())).toList();
+            if (u.size() > 0) {
+                assignedUserComboBox.selectItem(u.get(0));
+            } else {
+                assignedUserComboBox.clearSelection();
+            }
+
         } else {
             bugModel.setAssigner(loggedUser);
             deleteBugButton.setVisible(false);
             severityComboBox.selectFirst();
             statusComboBox.selectFirst();
             projectComboBox.selectFirst();
+            selectedProject = projectComboBox.getSelectedItem();
+            users = FXCollections.observableArrayList(userDao.getByProjectId(selectedProject.getId()));
+            assignedUserComboBox.setItems(users);
             assignedUserComboBox.selectFirst();
         }
+        projectComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                assignedUserComboBox.clearSelection();
+                selectedProject = newValue;
+                users = FXCollections.observableArrayList(userDao.getByProjectId(selectedProject.getId()));
+                assignedUserComboBox.setItems(users);
+            }
+        });
     }
 }

@@ -75,7 +75,6 @@ public class ProjectsController {
     @FXML
     private MFXTextField searchBox;
 
-
     @FXML
     private MFXButton usersButtonMenu;
 
@@ -154,6 +153,14 @@ public class ProjectsController {
     @FXML
     void initialize() {
         loggedUserNameField.setText(loggedUser.getName() + " " + loggedUser.getSurname());
+        // if logged user is not ADMIN, hide USERS button in menu
+        if (loggedUser.getRole_id() != 1) {
+            if (loggedUser.getRole_id() == 3) {
+                addProjectButton.setVisible(false);
+            }
+            usersButtonMenu.setVisible(false);
+        }
+
         List<Project> projects = projectDao.getAll();
         projectsModel = FXCollections.observableArrayList(projects);
         projectIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));

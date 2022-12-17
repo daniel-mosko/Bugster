@@ -92,21 +92,21 @@ public class UserEditController {
         User user = userModel.getUser();
         boolean userHasPassword = user.getId() != null && !userDao.getById(user.getId()).getPassword().isBlank();
         // user.setRole_id(selectedRole.getId());
-        if (user.getName() == null || user.getName().isBlank()) {
+        if (user.getName() == null || user.getName().isBlank() || user.getName().length() > 45) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Enter user name");
+            alert.setContentText("Enter user name (max 45 chars)");
             alert.show();
             return;
         }
-        if (user.getSurname() == null || user.getSurname().isBlank()) {
+        if (user.getSurname() == null || user.getSurname().isBlank() || user.getSurname().length() > 45) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Enter user surname");
+            alert.setContentText("Enter user surname (max 45 chars)");
             alert.show();
             return;
         }
-        if (user.getUsername() == null || user.getUsername().isBlank() || user.getUsername().length() <= 3) {
+        if (user.getUsername() == null || user.getUsername().isBlank() || user.getUsername().length() <= 3 || user.getUsername().length() > 45) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Enter valid username (4+ characters)");
+            alert.setContentText("Enter valid username (4+ characters and less than 45 chars)");
             alert.show();
             return;
         }
@@ -132,13 +132,16 @@ public class UserEditController {
             }
             user.setPassword(userPasswordField.getText());
         }
-        if (user.getEmail() == null || user.getEmail().isBlank() || !EmailValidator.validate(user.getEmail())) {
+        if (user.getEmail() == null || user.getEmail().isBlank() || !EmailValidator.validate(user.getEmail()) || user.getEmail().length() > 45) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Invalid email");
+            alert.setContentText("Invalid email (invalid format or length > 45 chars)");
             alert.show();
             return;
         }
-        System.out.println(user);
+        // if updated user is logged user
+        if (user.getId() != null && user.getId().equals(loggedUser.getId())) {
+            LoggedUser.INSTANCE.setLoggedUser(user);
+        }
         userDao.save(user);
         usersMenuClick(event);
     }

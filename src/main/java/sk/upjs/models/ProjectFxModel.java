@@ -12,7 +12,7 @@ public class ProjectFxModel {
     public ProjectFxModel(Project project) {
         this.id = project.getId();
         name.set(project.getName());
-        description.set(project.getName());
+        description.set(project.getDescription());
     }
 
     public ProjectFxModel() {

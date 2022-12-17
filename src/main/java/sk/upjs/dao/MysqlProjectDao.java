@@ -102,6 +102,7 @@ public class MysqlProjectDao implements ProjectDao {
         if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
             throw new UnauthorizedAccessException("Unauthorized - only admin can delete project");
         int delete1 = jdbcTemplate.update("DELETE FROM user_has_project WHERE project_id=" + id);
+        int delete3 = jdbcTemplate.update("DELETE FROM bug where project_id=" + id);
         int delete2 = jdbcTemplate.update("DELETE FROM project WHERE id=" + id);
         return delete1 >= 1 && delete2 == 1; // number of affected rows
     }

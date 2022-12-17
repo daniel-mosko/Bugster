@@ -4,8 +4,6 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import sk.upjs.LoggedUser;
+import sk.upjs.dao.BugDao;
 import sk.upjs.dao.ProjectDao;
 import sk.upjs.dao.UserDao;
 import sk.upjs.entity.Project;
@@ -32,6 +31,7 @@ public class ProjectEditController {
 
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final ProjectDao projectDao = DaoFactory.INSTANCE.getProjectDao();
+    private final BugDao bugDao = DaoFactory.INSTANCE.getBugDao();
     private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
     private final List<User> deletedUsers = new ArrayList<>();
     private final ProjectFxModel projectModel;
@@ -84,7 +84,7 @@ public class ProjectEditController {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm delete");
         alert.setHeaderText("You are going to delete this project");
-        alert.setContentText("Do you want to delete this project?");
+        alert.setContentText("This will also delete all bugs corresponding to this project");
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -114,7 +114,7 @@ public class ProjectEditController {
                         break;
                     }
                 }
-                /* Remove user from deletedUsers */
+                // Remove user from deletedUsers
                 for (int i = 0; i < deletedUsers.size(); i++) {
                     if (deletedUsers.get(i).getId().equals(selectedComboBoxUser.getId())) {
                         deletedUsers.remove(i);
@@ -133,18 +133,26 @@ public class ProjectEditController {
             selectedUser = assignedUsers.get(0);
         }
         if (selectedUser != null) {
-            /* Creating deep copy of selected User, because selected user can change between two for loops... */
+            // Creating deep copy of selected User, because selected user can change between two for loops...
             Long selectedUserId = new User(selectedUser).getId();
+            // Cannot delete user from project if user has active bugs
+            if (bugDao.getAll().stream().filter(bug -> bug.getAssigneeId() == selectedUserId || bug.getAssignerId() == selectedUserId).toList().size() > 0) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error while deleting user");
+                alert.setHeaderText("Cannot delete user that is assigner of bugs / assignee");
+                Optional<ButtonType> result = alert.showAndWait();
+                return;
+            }
             deletedUsers.add(selectedUser);
             userListModel.add(selectedUser);
-            /* Remove user from assignedUsers */
+            // Remove user from assignedUsers
             for (int i = 0; i < assignedUsers.size(); i++) {
                 if (assignedUsers.get(i).getId().equals(selectedUserId)) {
                     assignedUsers.remove(i);
                     break;
                 }
             }
-            /* Remove user from usersToAdd */
+            // Remove user from usersToAdd
             for (int i = 0; i < usersToAdd.size(); i++) {
                 if (usersToAdd.get(i).getId().equals(selectedUserId)) {
                     usersToAdd.remove(i);
@@ -173,15 +181,15 @@ public class ProjectEditController {
     @FXML
     void saveProjectButtonClick(ActionEvent event) {
         Project project = projectModel.getProject();
-        if (project.getName() == null || project.getName().isBlank()) {
+        if (project.getName() == null || project.getName().isBlank() || project.getName().length() > 45) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Name of a project cannot be empty");
+            alert.setContentText("Name of a project cannot be empty or it's too long (max 45 chars)");
             alert.show();
             return;
         }
-        if (project.getDescription() == null || project.getDescription().isBlank()) {
+        if (project.getDescription() == null || project.getDescription().isBlank() || project.getDescription().length() > 200) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setContentText("Description of a project cannot be empty");
+            alert.setContentText("Description of a project cannot be empty or it's too long (max 200 chars)");
             alert.show();
             return;
         }
@@ -202,11 +210,14 @@ public class ProjectEditController {
     @FXML
     void initialize() {
         loggedUserNameField.setText(loggedUser.getName() + " " + loggedUser.getSurname());
+        // if logged user is not ADMIN, hide USERS button in menu
+        if (loggedUser.getRole_id() != 1) {
+            usersButtonMenu.setVisible(false);
+        }
 
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         userNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         userSurnameCol.setCellValueFactory(new PropertyValueFactory<>("surname"));
-
 
         projectDescriptionTextArea.textProperty().bindBidirectional(projectModel.descriptionProperty());
         projectNameTextField.textProperty().bindBidirectional(projectModel.nameProperty());
@@ -243,7 +254,7 @@ public class ProjectEditController {
         selectedItems.addListener((ListChangeListener<User>) c -> {
             if (c.getList().size() > 0) {
                 selectedUser = c.getList().get(0);
-                userDeleteButton.setDisable(loggedUser.getId().equals(selectedUser.getId()));
+                userDeleteButton.setDisable(loggedUser.getRole_id() != 1 && loggedUser.getId().equals(selectedUser.getId()));
                 System.out.println(selectedUser);
             }
         });

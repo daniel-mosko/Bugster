@@ -212,7 +212,7 @@ public class BugsController {
 
     @FXML
     void onFilterClearButtonClick(ActionEvent event) {
-        filterMyBugsButton.setSelected(true);
+        filterMyBugsButton.setSelected(false);
         filterSeverityComboBox.clearSelection();
         filterStatusComboBox.clearSelection();
         filterProjectComboBox.clearSelection();
@@ -228,6 +228,15 @@ public class BugsController {
     @FXML
     void initialize() {
         loggedUserNameField.setText(loggedUser.getName() + " " + loggedUser.getSurname());
+        // if logged user is not ADMIN, hide USERS button in menu
+        if (loggedUser.getRole_id() != 1) {
+            // if logged user is developer, hide add new bug
+            if (loggedUser.getRole_id() == 3) {
+                addBugButton.setVisible(false);
+            }
+            usersButtonMenu.setVisible(false);
+        }
+        filterMyBugsButton.setSelected(false);
 
         bugIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         projectNameCol.setCellValueFactory(p -> {
@@ -250,12 +259,12 @@ public class BugsController {
         updatedAtCol.setCellValueFactory(new PropertyValueFactory<>("updatedAt"));
         assigneeCol.setCellValueFactory(p -> {
             SimpleStringProperty str = new SimpleStringProperty();
-            str.setValue(userDao.getById(p.getValue().getAssigneeId()).getName());
+            str.setValue(userDao.getById(p.getValue().getAssigneeId()).getUsername());
             return str;
         });
         assignerCol.setCellValueFactory(p -> {
             SimpleStringProperty str = new SimpleStringProperty();
-            str.setValue(userDao.getById(p.getValue().getAssignerId()).getName());
+            str.setValue(userDao.getById(p.getValue().getAssignerId()).getUsername());
             return str;
         });
 
@@ -292,8 +301,8 @@ public class BugsController {
         bugsTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Bug>) c -> bugsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Bug selectedBug = c.getList().get(0);
-                if ((loggedUser.getRole_id() == 1 ||
-                        userDao.getByProjectId(selectedBug.getProjectId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0)) {
+                if (loggedUser.getRole_id() == 1 ||
+                        userDao.getByProjectId(selectedBug.getProjectId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0) {
                     showBugEdit(new EditBugController(selectedBug), event);
                 } else {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
