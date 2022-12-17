@@ -19,7 +19,6 @@ import java.util.NoSuchElementException;
 public class MysqlBugDao implements BugDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
 
     public MysqlBugDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
