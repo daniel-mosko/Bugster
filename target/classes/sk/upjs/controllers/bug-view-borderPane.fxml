@@ -45,10 +45,10 @@
                   <TableColumn fx:id="statusCol" maxWidth="218.5" minWidth="75.0" prefWidth="218.5" text="Status" />
                   <TableColumn fx:id="severityCol" maxWidth="218.5" minWidth="75.0" prefWidth="218.5" text="Severity" />
                           <TableColumn fx:id="bugDescriptionCol" maxWidth="700.0" minWidth="150.0" prefWidth="540.0" text="Description" />
-                  <TableColumn fx:id="createdAtCol" maxWidth="218.5" minWidth="75.0" prefWidth="218.5" text="Time of creation" />
-                  <TableColumn fx:id="updatedAtCol" maxWidth="218.5" minWidth="75.0" prefWidth="218.5" text="Last update" />
-                          <TableColumn fx:id="assigneeCol" maxWidth="373.0899658203125" minWidth="75.0" prefWidth="359.78167724609375" text="Assignee" />
-                  <TableColumn fx:id="assignerCol" maxWidth="373.0899658203125" minWidth="75.0" prefWidth="359.78167724609375" text="Assigner" />
+                  <TableColumn fx:id="createdAtCol" maxWidth="400.0" minWidth="75.0" prefWidth="360.0" text="Time of creation" />
+                  <TableColumn fx:id="updatedAtCol" maxWidth="400.0" minWidth="75.0" prefWidth="360.0" text="Last update" />
+                          <TableColumn fx:id="assigneeCol" maxWidth="200.0" minWidth="75.0" prefWidth="200.0" text="Assignee" />
+                  <TableColumn fx:id="assignerCol" maxWidth="200.0" minWidth="75.0" prefWidth="200.0" text="Assigner" />
                       </columns>
                <GridPane.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
