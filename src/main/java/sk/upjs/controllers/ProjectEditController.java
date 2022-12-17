@@ -214,6 +214,8 @@ public class ProjectEditController {
         userListModel = FXCollections.observableArrayList(userDao.getAll());
         if (projectModel.getId() != null) {
             assignedUsers.addAll(userDao.getByProjectId(projectModel.getId()));
+        } else {
+            deleteProjectButton.setVisible(false);
         }
         usersTable.setItems(assignedUsers);
 

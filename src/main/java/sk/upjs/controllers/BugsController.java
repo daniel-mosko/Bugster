@@ -16,6 +16,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,6 +32,7 @@ import sk.upjs.factory.DaoFactory;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static sk.upjs.controllers.ProjectsController.logout;
@@ -289,7 +292,16 @@ public class BugsController {
         bugsTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Bug>) c -> bugsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Bug selectedBug = c.getList().get(0);
-                showBugEdit(new EditBugController(selectedBug), event);
+                if ((loggedUser.getRole_id() == 1 ||
+                        userDao.getByProjectId(selectedBug.getProjectId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0)) {
+                    showBugEdit(new EditBugController(selectedBug), event);
+                } else {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Unauthorized user");
+                    alert.setHeaderText("You are not the original assigner of bug.");
+                    alert.setContentText("To edit this bug, log in as assigner of this bug or as the admin.");
+                    Optional<ButtonType> confirm = alert.showAndWait();
+                }
             }
         }));
     }

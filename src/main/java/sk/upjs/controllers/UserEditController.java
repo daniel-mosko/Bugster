@@ -166,6 +166,7 @@ public class UserEditController {
         if (userModel.getId() != null) {
             userRoleComboBox.selectItem(roles.stream().filter(r -> r.getId() == userModel.getRole().getId()).toList().get(0));
         } else {
+            deleteUserButton.setVisible(false);
             userRoleComboBox.selectFirst();
         }
     }

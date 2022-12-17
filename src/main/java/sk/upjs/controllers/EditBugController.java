@@ -6,6 +6,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import sk.upjs.LoggedUser;
@@ -15,6 +17,8 @@ import sk.upjs.dao.UserDao;
 import sk.upjs.entity.*;
 import sk.upjs.factory.DaoFactory;
 import sk.upjs.models.BugFxModel;
+
+import java.util.Optional;
 
 import static sk.upjs.controllers.BugsController.bugsMenuClick;
 import static sk.upjs.controllers.ProjectsController.*;
@@ -85,7 +89,16 @@ public class EditBugController {
 
     @FXML
     void onDeleteBugButtonClick(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm delete");
+        alert.setHeaderText("You are going to delete this bug");
+        alert.setContentText("Do you want to delete this bug?");
 
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            bugDao.delete(bugModel.getId());
+        }
+        bugsMenuClick(event);
     }
 
     @FXML
@@ -95,9 +108,18 @@ public class EditBugController {
 
     @FXML
     void onSaveBugButtonClick(ActionEvent event) {
-        bugModel.setUpdated_at(currentDate);
+        if (bugModel.getId() != null) {
+            bugModel.setUpdated_at(currentDate);
+        } else {
+            bugModel.setCreated_at(currentDate);
+            bugModel.setUpdated_at(currentDate);
+        }
         Bug bug = bugModel.getBug();
-        bugDao.save(bug);
+        if (loggedUser.getRole_id() == 3) {
+            bugDao.changeStatus(bug.getStatusId(), bug.getId());
+        } else {
+            bugDao.save(bug);
+        }
         System.out.println(bug);
         bugsMenuClick(event);
     }
@@ -111,7 +133,7 @@ public class EditBugController {
     void initialize() {
         loggedUserNameField.setText(loggedUser.getName() + " " + loggedUser.getSurname());
 
-        bugModel.setAssigner(loggedUser);
+
         bugDescription.textProperty().bindBidirectional(bugModel.descriptionProperty());
         assignedUserComboBox.valueProperty().bindBidirectional(bugModel.assigneeProperty());
         projectComboBox.valueProperty().bindBidirectional(bugModel.projectProperty());
@@ -130,15 +152,24 @@ public class EditBugController {
         assignedUserComboBox.setItems(users);
 
         if (bugModel.getId() != null) {
+            //only admin and project manager can edit other than status in bug
+            if (!(loggedUser.getRole_id() == 1 || (loggedUser.getRole_id() == 2 &&
+                userDao.getByProjectId(bugModel.getProject().getId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0))) {
+                deleteBugButton.setDisable(true);
+                severityComboBox.setDisable(true);
+                projectComboBox.setDisable(true);
+                assignedUserComboBox.setDisable(true);
+                bugDescription.setDisable(true);
+            }
             createdAtLabel.setText(bugModel.getCreated_at());
             updatedAtLabel.setText(bugModel.getUpdated_at());
             severityComboBox.selectItem(severities.stream().filter(r -> r.getId() == bugModel.getSeverity().getId()).toList().get(0));
             statusComboBox.selectItem(statuses.stream().filter(r -> r.getId() == bugModel.getStatus().getId()).toList().get(0));
             projectComboBox.selectItem(projects.stream().filter(r -> r.getId().equals(bugModel.getProject().getId())).toList().get(0));
-            assignedUserComboBox.selectItem(users.stream().filter(r -> r.getId() == bugModel.getAssignee().getId()).toList().get(0));
+            assignedUserComboBox.selectItem(users.stream().filter(r -> r.getId().equals(bugModel.getAssignee().getId())).toList().get(0));
         } else {
-            createdAtLabel.setText(currentDate);
-            updatedAtLabel.setText(currentDate);
+            bugModel.setAssigner(loggedUser);
+            deleteBugButton.setVisible(false);
             severityComboBox.selectFirst();
             statusComboBox.selectFirst();
             projectComboBox.selectFirst();

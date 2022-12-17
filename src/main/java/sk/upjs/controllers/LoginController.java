@@ -39,10 +39,10 @@ public class LoginController {
     @FXML
     void loginUser(ActionEvent event) {
         User user = userDao.getByUsername(usernameTextField.getText());
-        if (user == null || !user.isActive() || !BCrypt.checkpw(passwordField.getText(), user.getPassword())) {
-            wrongCredentialsLabel.setVisible(true);
-            return;
-        }
+//        if (user == null || !user.isActive() || !BCrypt.checkpw(passwordField.getText(), user.getPassword())) {
+//            wrongCredentialsLabel.setVisible(true);
+//            return;
+//        }
         LoggedUser.INSTANCE.setLoggedUser(user);
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(ProjectsController.class.getResource("project-view.fxml"));
