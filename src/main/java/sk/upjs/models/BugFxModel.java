@@ -17,8 +17,8 @@ public class BugFxModel {
     private Long id;
     private StringProperty description = new SimpleStringProperty();
     private ObjectProperty<Project> project = new SimpleObjectProperty<>();
-    private ObjectProperty<LocalDateTime> created_at= new SimpleObjectProperty<>();
-    private ObjectProperty<LocalDateTime> updated_at= new SimpleObjectProperty<>();
+    private ObjectProperty<String> created_at= new SimpleObjectProperty<>();
+    private ObjectProperty<String> updated_at= new SimpleObjectProperty<>();
     private ObjectProperty<User> assigner = new SimpleObjectProperty<>();
     private ObjectProperty<User> assignee = new SimpleObjectProperty<>();
     private ObjectProperty<Status> status = new SimpleObjectProperty<>();
@@ -34,9 +34,11 @@ public class BugFxModel {
         this.id = bug.getId();
         description.set(bug.getDescription());
         project.set(projectDao.getById(bug.getProjectId()));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        created_at.set(LocalDateTime.parse(bug.getCreatedAt(), formatter));
-        updated_at.set(LocalDateTime.parse(bug.getUpdatedAt(), formatter));
+
+        created_at.set(getCreated_at());
+        updated_at.set(getUpdated_at());
+        created_at.set(bug.getCreatedAt());
+        updated_at.set(bug.getUpdatedAt());
         assigner.set(userDao.getById(bug.getAssignerId()));
         assignee.set(userDao.getById(bug.getAssigneeId()));
         status.set(bugDao.getStatusById(bug.getStatusId()));
@@ -71,27 +73,27 @@ public class BugFxModel {
         return project;
     }
 
-    public LocalDateTime getCreated_at() {
+    public String getCreated_at() {
         return created_at.get();
     }
 
-    public void setCreated_at(LocalDateTime created_at) {
+    public void setCreated_at(String created_at) {
         this.created_at.set(created_at);
     }
 
-    public ObjectProperty<LocalDateTime> created_atProperty() {
+    public ObjectProperty<String> created_atProperty() {
         return created_at;
     }
 
-    public LocalDateTime getUpdated_at() {
+    public String getUpdated_at() {
         return updated_at.get();
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
+    public void setUpdated_at(String updated_at) {
         this.updated_at.set(updated_at);
     }
 
-    public ObjectProperty<LocalDateTime> updated_atProperty() {
+    public ObjectProperty<String> updated_atProperty() {
         return updated_at;
     }
 
@@ -160,7 +162,7 @@ public class BugFxModel {
     }
 
     public Bug getBug() {
-        return new Bug(id, getDescription(), getCreated_at().toString(), getUpdated_at().toString(), getProject().getId(), getAssigner().getId(), getAssignee().getId(), getStatus().getId(), getSeverity().getId());
+        return new Bug(id, getDescription(), getCreated_at(), getUpdated_at(), getProject().getId(), getAssigner().getId(), getAssignee().getId(), getStatus().getId(), getSeverity().getId());
     }
 
 }

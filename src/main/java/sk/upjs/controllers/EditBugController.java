@@ -31,6 +31,10 @@ public class EditBugController {
     private Severity selectedSeverity;
     private Project selectedProject;
 
+    private java.util.Date dt = new java.util.Date();
+    private java.text.SimpleDateFormat formater = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private String currentDate = formater.format(dt);
+
     private BugFxModel bugModel;
     @FXML
     private MFXComboBox<User> assignedUserComboBox;
@@ -91,8 +95,11 @@ public class EditBugController {
 
     @FXML
     void onSaveBugButtonClick(ActionEvent event) {
+        bugModel.setUpdated_at(currentDate);
         Bug bug = bugModel.getBug();
+        bugDao.save(bug);
         System.out.println(bug);
+        bugsMenuClick(event);
     }
 
     @FXML
@@ -104,13 +111,12 @@ public class EditBugController {
     void initialize() {
         loggedUserNameField.setText(loggedUser.getName() + " " + loggedUser.getSurname());
 
+        bugModel.setAssigner(loggedUser);
         bugDescription.textProperty().bindBidirectional(bugModel.descriptionProperty());
         assignedUserComboBox.valueProperty().bindBidirectional(bugModel.assigneeProperty());
         projectComboBox.valueProperty().bindBidirectional(bugModel.projectProperty());
-        // createdAtLabel.textProperty().bindBidirectional(bugModel.created_atProperty());
-        // updatedAtLabel.textProperty().bindBidirectional(bugModel.updated_atProperty());
-        createdAtLabel.setText(bugModel.getCreated_at().toString());
-        updatedAtLabel.setText(bugModel.getUpdated_at().toString());
+        createdAtLabel.textProperty().bindBidirectional(bugModel.created_atProperty());
+        updatedAtLabel.textProperty().bindBidirectional(bugModel.updated_atProperty());
         severityComboBox.valueProperty().bindBidirectional(bugModel.severityProperty());
         statusComboBox.valueProperty().bindBidirectional(bugModel.statusProperty());
 
@@ -124,11 +130,15 @@ public class EditBugController {
         assignedUserComboBox.setItems(users);
 
         if (bugModel.getId() != null) {
+            createdAtLabel.setText(bugModel.getCreated_at());
+            updatedAtLabel.setText(bugModel.getUpdated_at());
             severityComboBox.selectItem(severities.stream().filter(r -> r.getId() == bugModel.getSeverity().getId()).toList().get(0));
             statusComboBox.selectItem(statuses.stream().filter(r -> r.getId() == bugModel.getStatus().getId()).toList().get(0));
             projectComboBox.selectItem(projects.stream().filter(r -> r.getId().equals(bugModel.getProject().getId())).toList().get(0));
             assignedUserComboBox.selectItem(users.stream().filter(r -> r.getId() == bugModel.getAssignee().getId()).toList().get(0));
         } else {
+            createdAtLabel.setText(currentDate);
+            updatedAtLabel.setText(currentDate);
             severityComboBox.selectFirst();
             statusComboBox.selectFirst();
             projectComboBox.selectFirst();
