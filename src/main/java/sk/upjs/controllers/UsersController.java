@@ -29,6 +29,7 @@ import sk.upjs.factory.DaoFactory;
 
 import java.io.IOException;
 
+import static sk.upjs.controllers.BugsController.bugsMenuClick;
 import static sk.upjs.controllers.ProjectsController.logout;
 import static sk.upjs.controllers.ProjectsController.projectsMenuClick;
 
@@ -73,6 +74,9 @@ public class UsersController {
     @FXML
     private MFXButton projectsButtonMenu;
     @FXML
+    private MFXButton bugsButtonMenu;
+
+    @FXML
     private MFXButton filterClearButton;
 
     @FXML
@@ -105,7 +109,7 @@ public class UsersController {
     static void usersMenuClick(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader =
-                    new FXMLLoader(UsersController.class.getResource("user-view.fxml"));
+                    new FXMLLoader(UsersController.class.getResource("user-view-borderPA.fxml"));
             Stage stage = new Stage();
             Scene scene = new Scene(fxmlLoader.load());
             stage.setScene(scene);
@@ -128,7 +132,7 @@ public class UsersController {
     void showUserEdit(UserEditController controller, Event event) {
         try {
             FXMLLoader fxmlLoader =
-                    new FXMLLoader(getClass().getResource("edit-user-view.fxml"));
+                    new FXMLLoader(getClass().getResource("edit-user-view-responsive.fxml"));
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent);
@@ -171,6 +175,11 @@ public class UsersController {
     @FXML
     void onUsersButtonMenuClick(ActionEvent event) {
         usersMenuClick(event);
+    }
+
+    @FXML
+    void onBugsButtonMenuClick(ActionEvent event) {
+        bugsMenuClick(event);
     }
 
     @FXML

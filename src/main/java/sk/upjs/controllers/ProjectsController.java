@@ -120,7 +120,7 @@ public class ProjectsController {
     void showProjectEdit(ProjectEditController controller, Event event) {
         try {
             FXMLLoader fxmlLoader =
-                    new FXMLLoader(getClass().getResource("edit-project-view.fxml"));
+                    new FXMLLoader(getClass().getResource("edit-project-view-responsive.fxml"));
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent);

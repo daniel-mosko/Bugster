@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static sk.upjs.controllers.BugsController.bugsMenuClick;
 import static sk.upjs.controllers.ProjectsController.projectsMenuClick;
 import static sk.upjs.controllers.UsersController.usersMenuClick;
 
@@ -56,6 +57,8 @@ public class ProjectEditController {
     private MFXButton projectsButtonMenu;
     @FXML
     private MFXButton usersButtonMenu;
+    @FXML
+    private MFXButton bugsButtonMenu;
     @FXML
     private TableColumn<User, Long> userIdCol;
     @FXML
@@ -176,6 +179,11 @@ public class ProjectEditController {
     @FXML
     void onUsersButtonMenuClick(ActionEvent event) {
         usersMenuClick(event);
+    }
+
+    @FXML
+    void onBugsButtonMenuClick(ActionEvent event) {
+        bugsMenuClick(event);
     }
 
     @FXML

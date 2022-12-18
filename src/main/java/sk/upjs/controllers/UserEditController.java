@@ -20,6 +20,7 @@ import sk.upjs.models.UserFxModel;
 
 import java.util.Optional;
 
+import static sk.upjs.controllers.BugsController.bugsMenuClick;
 import static sk.upjs.controllers.ProjectsController.logout;
 import static sk.upjs.controllers.ProjectsController.projectsMenuClick;
 import static sk.upjs.controllers.UsersController.usersMenuClick;
@@ -38,6 +39,8 @@ public class UserEditController {
     private MFXButton logoutButton;
     @FXML
     private MFXButton projectsButtonMenu;
+    @FXML
+    private MFXButton bugsButtonMenu;
     @FXML
     private MFXButton saveUserButton;
     @FXML
@@ -85,6 +88,11 @@ public class UserEditController {
     @FXML
     void onProjectsButtonMenuClick(ActionEvent event) {
         projectsMenuClick(event);
+    }
+
+    @FXML
+    void onBugsButtonMenuClick(ActionEvent event) {
+        bugsMenuClick(event);
     }
 
     @FXML
