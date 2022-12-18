@@ -214,6 +214,15 @@ public class ProjectEditController {
         if (loggedUser.getRole_id() != 1) {
             usersButtonMenu.setVisible(false);
         }
+        if (loggedUser.getRole_id() == 3) {
+            projectNameTextField.setDisable(true);
+            projectDescriptionTextArea.setDisable(true);
+            deleteProjectButton.setVisible(false);
+            addNewProjectButton.setVisible(false);
+            userComboBox.setDisable(true);
+            userAddButton.setDisable(true);
+            userDeleteButton.setDisable(true);
+        }
 
         userIdCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         userNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -254,7 +263,7 @@ public class ProjectEditController {
         selectedItems.addListener((ListChangeListener<User>) c -> {
             if (c.getList().size() > 0) {
                 selectedUser = c.getList().get(0);
-                userDeleteButton.setDisable(loggedUser.getRole_id() != 1 && loggedUser.getId().equals(selectedUser.getId()));
+                userDeleteButton.setDisable((loggedUser.getRole_id() != 1 && loggedUser.getId().equals(selectedUser.getId())) || loggedUser.getRole_id() == 3);
                 System.out.println(selectedUser);
             }
         });
