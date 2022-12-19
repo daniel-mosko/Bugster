@@ -2,6 +2,7 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
 <?import io.github.palexdev.materialfx.controls.legacy.MFXLegacyTableView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -38,16 +39,18 @@
                   </Label>
             <GridPane GridPane.rowIndex="1">
               <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="192.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="461.0" minWidth="100.0" prefWidth="461.0" />
+                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="230.11947631835938" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="137.2515869140625" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="320.0" minWidth="10.0" prefWidth="104.2578125" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="656.855224609375" minWidth="100.0" prefWidth="582.7421875" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="50.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                        <MFXButton fx:id="addProjectButton" depthLevel="LEVEL4" minWidth="75.0" onAction="#addProjectButtonClick" prefHeight="48.0" prefWidth="135.0" style="-fx-background-color: #001F43;" text="Add new project" textFill="WHITE" GridPane.columnIndex="1">
+                        <MFXButton fx:id="addProjectButton" depthLevel="LEVEL4" minWidth="75.0" onAction="#addProjectButtonClick" prefHeight="48.0" prefWidth="135.0" style="-fx-background-color: #001F43;" text="Add new project" textFill="WHITE" GridPane.columnIndex="3">
                      <GridPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        <Insets bottom="5.0" left="10.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </MFXButton>
                         <MFXTextField fx:id="searchBox" borderGap="0.0" floatingText="Search by name or description" prefHeight="51.0" prefWidth="305.0">
@@ -55,6 +58,16 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </GridPane.margin>
                   </MFXTextField>
+                  <MFXToggleButton fx:id="filterMyProjectsButton" selected="true" text="My projects" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </MFXToggleButton>
+                  <MFXButton fx:id="filterApplyButton" depthLevel="LEVEL4" minHeight="38.0" onAction="#onFilterApplyButtonClick" prefHeight="38.0" prefWidth="73.0" style="-fx-background-color: #001F43;" text="OK" textFill="WHITE" GridPane.columnIndex="2">
+                     <GridPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </MFXButton>
                </children>
             </GridPane>
                   <MFXLegacyTableView fx:id="projectsTable" editable="true" prefHeight="397.0" prefWidth="723.0" GridPane.rowIndex="2">

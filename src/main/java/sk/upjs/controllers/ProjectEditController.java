@@ -208,6 +208,7 @@ public class ProjectEditController {
         for (User userToAdd : usersToAdd) {
             projectDao.addUserToProject(userToAdd.getId(), savedProject.getId());
         }
+
         System.out.println("Deleted " + deletedUsers);
         System.out.println("Assigned " + assignedUsers);
         System.out.println("ToAdd " + usersToAdd);

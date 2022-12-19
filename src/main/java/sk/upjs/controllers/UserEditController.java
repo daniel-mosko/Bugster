@@ -12,6 +12,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import sk.upjs.EmailValidator;
 import sk.upjs.LoggedUser;
+import sk.upjs.dao.BugDao;
 import sk.upjs.dao.UserDao;
 import sk.upjs.entity.Role;
 import sk.upjs.entity.User;
@@ -28,6 +29,7 @@ import static sk.upjs.controllers.UsersController.usersMenuClick;
 public class UserEditController {
     private final User loggedUser = LoggedUser.INSTANCE.getLoggedUser();
     private final UserDao userDao = DaoFactory.INSTANCE.getUserDao();
+    private final BugDao bugDao = DaoFactory.INSTANCE.getBugDao();
     private final UserFxModel userModel;
     @FXML
     private MFXButton deleteUserButton;
@@ -73,6 +75,13 @@ public class UserEditController {
 
     @FXML
     void onDeleteUserButtonClick(ActionEvent event) {
+        if (bugDao.getAll().stream().filter(bug -> bug.getAssigneeId() == userModel.getId() || bug.getAssignerId() == userModel.getId()).toList().size() > 0) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error while deleting user");
+            alert.setHeaderText("Cannot delete user that is assigner of bugs / assignee");
+            Optional<ButtonType> result = alert.showAndWait();
+            return;
+        }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm delete");
         alert.setHeaderText("You are going to delete this user");

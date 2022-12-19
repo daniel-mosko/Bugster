@@ -66,8 +66,8 @@ public class MysqlProjectDao implements ProjectDao {
 
     @Override
     public Project save(Project project) throws NoSuchElementException, NullPointerException, UnauthorizedAccessException {
-        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() != 1)
-            throw new UnauthorizedAccessException("Unauthorized - only admin can save or update project");
+        if (LoggedUser.INSTANCE.getLoggedUser().getRole_id() > 2)
+            throw new UnauthorizedAccessException("Unauthorized - only admin or manager of the project can save or update project");
         if (project == null) throw new NullPointerException("cannot save null");
         if (project.getName() == null)
             throw new NullPointerException("Name of project is null");
