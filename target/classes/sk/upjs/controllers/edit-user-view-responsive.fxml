@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <GridPane prefHeight="720.0" prefWidth="187.0" style="-fx-background-color: #001f43#001f43 #001f43;" BorderPane.alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="249.0" minHeight="100.0" prefHeight="183.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="249.0" minHeight="41.0" prefHeight="79.0" valignment="TOP" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="184.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="114.0" minHeight="37.0" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="114.0" minHeight="37.0" prefHeight="50.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="361.0" minHeight="50.0" prefHeight="337.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <MFXButton fx:id="projectsButtonMenu" minHeight="38.0" onAction="#onProjectsButtonMenuClick" prefHeight="38.0" prefWidth="146.0" style="-fx-background-color: #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43;" text="Projects" textFill="WHITE" GridPane.rowIndex="2">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </MFXButton>
+            <MFXButton fx:id="usersButtonMenu" minHeight="38.0" onAction="#onUsersButtonMenuClick" prefHeight="38.0" prefWidth="146.0" style="-fx-background-color: #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA #306DBA;" text="Users" textFill="WHITE" GridPane.rowIndex="4">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </GridPane.margin>
+            </MFXButton>
+            <ImageView fitHeight="92.0" fitWidth="73.0">
+               <image>
+                  <Image url="@../logo.png" />
+               </image>
+               <GridPane.margin>
+                  <Insets bottom="5.0" left="10.0" right="5.0" top="10.0" />
+               </GridPane.margin>
+            </ImageView>
+            <GridPane prefHeight="361.0" prefWidth="140.0" GridPane.rowIndex="5">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <MFXButton fx:id="logoutButton" alignment="CENTER" minHeight="38.0" onAction="#logoutButtonClick" prefHeight="38.0" prefWidth="102.0" text="Logout" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets bottom="10.0" left="5.0" right="5.0" top="5.0" />
+                     </GridPane.margin>
+                  </MFXButton>
+               </children>
+            </GridPane>
+            <GridPane GridPane.rowIndex="1">
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="66.0" minWidth="10.0" prefWidth="47.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.0" minWidth="10.0" prefWidth="93.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <ImageView fitHeight="31.0" fitWidth="34.0" preserveRatio="true">
+                     <image>
+                        <Image url="@../user.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="loggedUserNameField" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets top="10.0" />
+                     </GridPane.margin>
+                  </Label>
+               </children>
+            </GridPane>
+            <MFXButton fx:id="bugsButtonMenu" minHeight="38.0" onAction="#onBugsButtonMenuClick" prefHeight="38.0" prefWidth="146.0" style="-fx-background-color: #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43 #001f43;" text="Bugs" textFill="WHITE" GridPane.rowIndex="3">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </MFXButton>
+         </children>
+      </GridPane>
+   </left>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+                  <Label prefHeight="79.0" prefWidth="253.0" text="Edit user" textFill="#111251">
+                      <font>
+                          <Font name="System Bold" size="40.0" />
+                      </font>
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+                  </Label>
+            <GridPane GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="350.48968505859375" minWidth="10.0" prefWidth="300.7698669433594" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="459.558837890625" minWidth="10.0" prefWidth="296.2301330566406" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="443.2376403808594" minWidth="10.0" prefWidth="132.74322509765625" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <MFXTextField fx:id="userNameField" floatingText="Name" prefHeight="48.0" prefWidth="246.0">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </MFXTextField>
+                  <MFXTextField fx:id="userSurnameField" floatingText="Surname" prefHeight="48.0" prefWidth="246.0" GridPane.columnIndex="1" />
+                  <MFXTextField fx:id="userUsernameField" floatingText="Username" prefHeight="48.0" prefWidth="246.0" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </MFXTextField>
+                  <MFXPasswordField fx:id="userPasswordField" floatingText="Password" prefHeight="48.0" prefWidth="246.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+            <MFXTextField fx:id="userEmailField" floatingText="Email" prefHeight="48.0" prefWidth="512.0" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets left="20.0" />
+               </GridPane.margin>
+            </MFXTextField>
+            <GridPane GridPane.rowIndex="3">
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="297.8623046875" minWidth="10.0" prefWidth="186.3824462890625" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="464.9958801269531" minWidth="10.0" prefWidth="426.6175537109375" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <MFXComboBox fx:id="userRoleComboBox" floatingText="Role" prefHeight="39.0" prefWidth="136.0">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </MFXComboBox>
+                  <MFXToggleButton fx:id="isActiveButton" text="Active" GridPane.columnIndex="1" />
+               </children>
+            </GridPane>
+            <GridPane GridPane.rowIndex="4">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                        <MFXButton fx:id="saveUserButton" depthLevel="LEVEL4" onAction="#onSaveUserButtonClick" prefHeight="38.0" prefWidth="93.0" style="-fx-background-color: #001F43;" text="Save" textFill="WHITE">
+                     <GridPane.margin>
+                        <Insets left="20.0" />
+                     </GridPane.margin>
+                  </MFXButton>
+                  <MFXButton fx:id="deleteUserButton" depthLevel="LEVEL4" onAction="#onDeleteUserButtonClick" prefHeight="38.0" prefWidth="93.0" style="-fx-background-color: red;" text="Delete" textFill="WHITE" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets right="20.0" />
+                     </GridPane.margin>
+                  </MFXButton>
+               </children>
+            </GridPane>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>
