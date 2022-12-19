@@ -298,6 +298,7 @@ public class BugsController {
             }
         });
 
+        // editing bug on double click
         bugsTable.getSelectionModel().getSelectedItems().addListener((ListChangeListener<Bug>) c -> bugsTable.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
                 Bug selectedBug = c.getList().get(0);
