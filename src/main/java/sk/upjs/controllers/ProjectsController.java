@@ -119,13 +119,11 @@ public class ProjectsController {
 
     @FXML
     void onFilterApplyButtonClick(ActionEvent event) {
-        System.out.println("Filtered list:" + projectsFilteredList);
         projectsFilteredList = FXCollections.observableArrayList(projectsList.stream().filter(
                         project -> ((project.getName().toLowerCase().contains(searchBox.getText().toLowerCase()))
                                 || (project.getDescription().toLowerCase().contains(searchBox.getText().toLowerCase())))
                                 && (!filterMyProjectsButton.isSelected() || userDao.getByProjectId(project.getId()).stream().filter(user -> user.getId().equals(loggedUser.getId())).toList().size() > 0 == filterMyProjectsButton.isSelected()))
                 .toList());
-        System.out.println(projectsFilteredList);
         projectsTable.setItems(projectsFilteredList);
     }
 
@@ -185,7 +183,6 @@ public class ProjectsController {
         projectNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         projectDescriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-        System.out.println(projects);
         projectsList = FXCollections.observableArrayList(projectDao.getAll());
         projectsTable.getItems().setAll(projectsModel);
 

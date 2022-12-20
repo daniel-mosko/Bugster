@@ -138,7 +138,6 @@ public class EditBugController {
         } else {
             bugDao.save(bug);
         }
-        System.out.println(bug);
         bugsMenuClick(event);
     }
 

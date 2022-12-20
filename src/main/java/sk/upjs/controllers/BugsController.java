@@ -165,7 +165,7 @@ public class BugsController {
     void showBugEdit(EditBugController controller, Event event) {
         try {
             FXMLLoader fxmlLoader =
-                    new FXMLLoader(getClass().getResource("edit-bug-view-responsice.fxml"));
+                    new FXMLLoader(getClass().getResource("edit-bug-view-responsive.fxml"));
             fxmlLoader.setController(controller);
             Parent parent = fxmlLoader.load();
             Scene scene = new Scene(parent);
@@ -197,7 +197,6 @@ public class BugsController {
 
     @FXML
     void onFilterApplyButtonClick(ActionEvent event) {
-        System.out.println("Filtered list:" + bugsFilteredList);
         bugsFilteredList = FXCollections.observableArrayList(bugsList.stream().filter(
                         bug -> (userDao.getById(bug.getAssigneeId()).getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase())
                                 || userDao.getById(bug.getAssignerId()).getUsername().toLowerCase().contains(filterUsernameField.getText().toLowerCase()))
@@ -206,7 +205,6 @@ public class BugsController {
                                 && (filterSelectedSeverity == null || bug.getSeverityId() == filterSelectedSeverity.getId())
                                 && (!filterMyBugsButton.isSelected() || (bug.getAssigneeId() == loggedUser.getId() || bug.getAssignerId() == loggedUser.getId()) == filterMyBugsButton.isSelected()))
                 .toList());
-        System.out.println(bugsFilteredList);
         bugsTable.setItems(bugsFilteredList);
     }
 

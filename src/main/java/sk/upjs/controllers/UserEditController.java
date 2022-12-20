@@ -127,9 +127,7 @@ public class UserEditController {
             alert.show();
             return;
         }
-        System.out.println(userHasPassword);
-        System.out.println(user.getPassword());
-        if (!userHasPassword) {
+        if (!userHasPassword || !userPasswordField.getText().isBlank()) {
             if (userPasswordField.getText().isBlank()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setContentText("Enter password");

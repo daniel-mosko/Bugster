@@ -149,7 +149,6 @@ public class UsersController {
 
     @FXML
     void onFilterApplyButtonClick(ActionEvent event) {
-        System.out.println("Filtered list:" + usersFilteredList);
         usersFilteredList = FXCollections.observableArrayList(usersList.stream().filter(
                         user -> user.getName().toLowerCase().contains(filterNameField.getText().toLowerCase())
                                 && user.getSurname().toLowerCase().contains(filterSurnameField.getText().toLowerCase())
@@ -158,7 +157,6 @@ public class UsersController {
                                 && user.isActive() == filterActiveButton.isSelected()
                                 && (filterSelectedRole.getName().equals("Any") || user.getRole_id() == filterSelectedRole.getId()))
                 .toList());
-        System.out.println(usersFilteredList);
         usersTable.setItems(usersFilteredList);
     }
 

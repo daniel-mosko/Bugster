@@ -139,12 +139,16 @@ public class ProjectEditController {
             // Creating deep copy of selected User, because selected user can change between two for loops...
             Long selectedUserId = new User(selectedUser).getId();
             // Cannot delete user from project if user has active bugs
-            if (bugDao.getAll().stream().filter(bug -> bug.getAssigneeId() == selectedUserId || bug.getAssignerId() == selectedUserId).toList().size() > 0) {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error while deleting user");
-                alert.setHeaderText("Cannot delete user that is assigner of bugs / assignee");
-                Optional<ButtonType> result = alert.showAndWait();
-                return;
+            if (projectModel.getId() != null) {
+                if (bugDao.getAll().stream().filter(
+                                bug -> (bug.getAssigneeId() == selectedUserId || bug.getAssignerId() == selectedUserId) && bug.getProjectId() == projectModel.getId())
+                        .toList().size() > 0) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error while deleting user");
+                    alert.setHeaderText("Cannot delete user that is assigner of bugs / assignee");
+                    Optional<ButtonType> result = alert.showAndWait();
+                    return;
+                }
             }
             deletedUsers.add(selectedUser);
             userListModel.add(selectedUser);
@@ -208,11 +212,6 @@ public class ProjectEditController {
         for (User userToAdd : usersToAdd) {
             projectDao.addUserToProject(userToAdd.getId(), savedProject.getId());
         }
-
-        System.out.println("Deleted " + deletedUsers);
-        System.out.println("Assigned " + assignedUsers);
-        System.out.println("ToAdd " + usersToAdd);
-        System.out.println("List " + userListModel);
         projectsMenuClick(event);
     }
 
@@ -273,7 +272,6 @@ public class ProjectEditController {
             if (c.getList().size() > 0) {
                 selectedUser = c.getList().get(0);
                 userDeleteButton.setDisable((loggedUser.getRole_id() != 1 && loggedUser.getId().equals(selectedUser.getId())) || loggedUser.getRole_id() == 3);
-                System.out.println(selectedUser);
             }
         });
     }
